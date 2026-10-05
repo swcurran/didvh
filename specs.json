@@ -22,8 +22,6 @@
         "repo": "didvh"
       },
       "output_path": "./next",
-      "logo": "https://raw.githubusercontent.com/decentralized-identity/didwebvh/refs/heads/main/didwebvh.jpg",
-      "logo_link": "https://github.com/swcurran/didvh",
       "spec_refs": [
         {
           "multiformats": {

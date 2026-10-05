@@ -49,7 +49,7 @@ npm run edit     # watch
   plugin `spec-refs.mjs` for `[[spec:NAME]]`. Do NOT use `external_specs` — in 0.11.6 it only
   fetches other Spec-Up pages for `[[xref:]]`, and fetching non-Spec-Up pages produces huge
   jsdom CSS error dumps.
-- Rendered output goes to `next/` (git-ignored `index.html`; do not edit). The root
+- Rendered output goes to `next/` (git-ignored; do not edit or commit). The root
   `index.html` redirects to `next/`. Published via the `render-specs` workflow to the
   `gh-pages` branch → <https://swcurran.github.io/didvh/>.
 
@@ -59,7 +59,7 @@ npm run edit     # watch
 spec/               # did:vh specification source (Spec-Up Markdown)
   header.md, abstract.md, overview.md, specification.md,
   security_and_privacy.md, definitions.md, references.md, version.md
-next/               # Rendered HTML output (do not edit directly)
+next/               # Rendered HTML output (git-ignored; do not edit directly)
 index.html          # Redirect to next/
 spec-refs.mjs, render.mjs, edit.mjs, specs.json, package.json
 ```
@@ -112,7 +112,9 @@ spec-refs.mjs, render.mjs, edit.mjs, specs.json, package.json
   (freshness, duplicity → error), or should the client retrieve from each source and make
   multiple `resolve()` calls, comparing the results? Currently: one DID Log per `resolve()`
   call, no `watchers` resolution option, no resolver-configured sources, and
-  freshness/duplicity handling is non-normative client guidance.
+  freshness/duplicity handling is non-normative client guidance. (Earlier drafts had a
+  `watchers` option, a `src` array, and normative resolver-side comparison rules — removed
+  2026-09-25 pending this decision.)
 - **Explore `src` naming a DID method (from did:scid).** did:scid lets `src` be a DID method
   that stores the verification data (e.g. `?src=did:cheqd:testnet`, using cheqd DID-Linked
   Resources). did:vh v0.1 supports URLs only (see the note under "The `src` Option"). Broader
@@ -125,8 +127,11 @@ spec-refs.mjs, render.mjs, edit.mjs, specs.json, package.json
   out of the normative "Relationship to VH-Log and `did:webvh`" table. Read the did:cel spec
   first so differences are stated accurately (log structure and verification, where the log
   is kept, resolution, witness/timestamping model).
-- did:vh still references did:webvh for some material (resolution metadata, witness
-  `did:key` rules, `#files`/`#whois` dereferencing) — candidates to move into VH-Log.
+- did:vh still references did:webvh for some material (resolution metadata, the
+  DID-to-HTTPS transformation used for `src` web locations, witness `did:key` rules,
+  `#files`/`#whois` dereferencing) — candidates to move into VH-Log.
+- did:vh follows VH-Log as it stands today (`updateKeys`/`nextKeyHashes`); pick up the
+  mandatory pre-rotation change when VH-Log makes it.
 
 ## Authoring Guidelines
 
