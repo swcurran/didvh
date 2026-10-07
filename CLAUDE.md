@@ -1,73 +1,38 @@
 # CLAUDE.md — did:vh spec
 
-## Purpose
+## About This Repository
 
-This repository contains the **`did:vh` DID Method** specification. `did:vh` is a
-specialisation of the [Verifiable History Log (VH-Log)](https://swcurran.github.io/VH-Log/next/)
-specification (repo: <https://github.com/swcurran/VH-Log>, local clone `/d2/repos/VH-Log`),
-similar to [did:webvh](https://identity.foundation/didwebvh/) but with no domain/path
-component — the DID is `did:vh:<SCID>`. Comparable to the `did:scid:vh` format of the
-proposed ToIP `did:scid` metamethod.
+See [README.md](README.md) for what did:vh is, its status, its relationship to VH-Log,
+did:webvh and did:scid, the repository layout, how to render the spec, how to add
+external references, and how publishing works. Don't repeat that material here; update
+the README instead. The spec itself (`spec/`) is the authority on how did:vh works.
 
-did:vh was split out of the VH-Log repo on 2026-10-05; its earlier history is in that repo
-(`spec-didvh/`). The specification is pre-draft. Do not implement against it until it
-reaches Draft status.
+## Notes for Claude
 
-## Relationship to VH-Log
-
-VH-Log defines the log entry structure, hash chaining, SCID, parameters, witnesses,
-watchers, the resolution algorithm, version selection, and transport requirements
-("Publishing and Retrieving Log Resources"). did:vh references VH-Log for all of these
-and defines only what is DID-specific.
-
-- Links to VH-Log are **absolute** URLs to the published draft:
-  `https://swcurran.github.io/VH-Log/next/index.html#<anchor>`. When a VH-Log heading is
-  renamed, the matching links here must be updated (and vice versa — VH-Log links to
-  `https://swcurran.github.io/didvh/`).
-- General direction: material shared by did:vh and did:webvh belongs in VH-Log, so did:vh
+- **VH-Log** local clone: `/d2/repos/VH-Log`. Its CLAUDE.md records the planned VH-Log
+  changes did:vh will pick up — notably mandatory key pre-rotation (`updateKeys` removed,
+  `nextKeyHashes` → `prerotationHashes`) and the `eddsa-jcs-prerotation-2026` cryptosuite.
+  General direction: material shared by did:vh and did:webvh belongs in VH-Log, so did:vh
   references VH-Log rather than its sibling.
-- The VH-Log CLAUDE.md records the planned VH-Log changes did:vh will pick up — notably
-  mandatory key pre-rotation (`updateKeys` removed, `nextKeyHashes` → `prerotationHashes`)
-  and the `eddsa-jcs-prerotation-2026` cryptosuite.
-
-## Specification Tooling
-
-Uses [Spec-Up](https://github.com/decentralized-identity/spec-up) v0.11.6 (npm, official
-package — NOT the old `github:brianorwhatever/spec-up` fork).
-
-```
-npm install
-npm run render   # render once
-npm run edit     # watch
-```
-
-- `render.mjs` / `edit.mjs` are ESM, required by spec-up 0.11.6. The GitHub workflow also
-  runs `node render.mjs` (the old `require('spec-up')` form fails).
-- `.npmrc` sets `node-options=--dns-result-order=ipv4first`, needed where IPv6 is broken.
-- External references not in spec-up's bundled specref data go in the `spec_refs` array in
-  `specs.json` (`{ "name": { href, title, rawDate, authors, status } }`), merged by the local
-  plugin `spec-refs.mjs` for `[[spec:NAME]]`. Do NOT use `external_specs` — in 0.11.6 it only
-  fetches other Spec-Up pages for `[[xref:]]`, and fetching non-Spec-Up pages produces huge
-  jsdom CSS error dumps.
-- Rendered output goes to `next/` (git-ignored; do not edit or commit). The root
-  `index.html` redirects to `next/`. Published via the `render-specs` workflow to the
-  `gh-pages` branch → <https://swcurran.github.io/didvh/>.
-
-## Repository Structure
-
-```
-spec/               # did:vh specification source (Spec-Up Markdown)
-  header.md, abstract.md, overview.md, specification.md,
-  security_and_privacy.md, definitions.md, references.md, version.md
-next/               # Rendered HTML output (git-ignored; do not edit directly)
-index.html          # Redirect to next/
-spec-refs.mjs, render.mjs, edit.mjs, specs.json, package.json
-```
+- **History:** did:vh was split out of the VH-Log repo on 2026-10-05; its earlier history
+  is in that repo (`spec-didvh/`).
+- **Spec-Up:** use the official npm package v0.11.6, NOT the old
+  `github:brianorwhatever/spec-up` fork. `render.mjs` / `edit.mjs` are ESM because 0.11.6
+  needs them; the GitHub workflow also runs `node render.mjs` (the old
+  `require('spec-up')` form fails).
+- **External references:** add them to `spec_refs` in `specs.json` (see README). Do NOT
+  use `external_specs`: in 0.11.6 it only fetches other Spec-Up pages for `[[xref:]]`
+  terms, and fetching non-Spec-Up pages produces huge jsdom CSS error dumps.
+- **`next/`** is rendered output and git-ignored: don't edit or commit it.
+- **Links both ways:** links here to VH-Log are absolute anchor URLs, and VH-Log links to
+  `https://swcurran.github.io/didvh/`. After edits, `npm run render`, confirm every
+  `href="#..."` in `next/index.html` has a matching `id`, and check every VH-Log anchor
+  used here exists in `/d2/repos/VH-Log/next/index.html`.
 
 ## Key Design Decisions (open to revision)
 
-- DID is `did:vh:<SCID>` only; spec version lives in the `method` parameter
-  (`did:vh:1.0` ↔ `vh-log:1.0`), not in the DID string (unlike `did:scid:vh:1:<SCID>`).
+- DID is `did:vh:<SCID>` only; the spec version is in the `method` parameter
+  (`did:vh:1.0` ↔ `vh-log:1.0`), not the DID (see README).
 - Log/witness file names `did.jsonl` / `did-witness.json`, same as did:webvh.
 - **Resolve vs. source are separated.** Read (Resolve) is normative: a did:vh resolver
   implements DID Resolution's `resolve(did, resolutionOptions)` — `did` is the bare
@@ -78,7 +43,10 @@ spec-refs.mjs, render.mjs, edit.mjs, specs.json, package.json
   `versionNumber`. Options are did:vh-specific, to be registered in the DID Extensions
   resolution registry. Malformed options → `invalidOptions`; resolver must support logs
   passed directly and may decline `src` by policy → `featureNotSupported`. The resolver does
-  NOT discover logs, use its own configured sources, or compare multiple copies (see TODO).
+  NOT discover logs or use its own configured sources. It compares further copies only
+  when asked, via VH-Log's `checkWatchers` / `extraWatchers` / `minCopies` options (added
+  2026-10-07): `copies`/`warnings` go in didResolutionMetadata; errors `logForked` and
+  `insufficientCopies` are did:vh-specific, to be registered.
 - "Sourcing the DID Log" is a separate, explicitly non-normative section (no RFC 2119
   keywords): known in context, from watchers (client GETs `/log?scid=` and `/witness?scid=`
   and passes them directly), peer-to-peer exchange, from a web location, advertising sources
@@ -107,14 +75,11 @@ spec-refs.mjs, render.mjs, edit.mjs, specs.json, package.json
 
 ## TODOs
 
-- **Decide who handles multiple sources/watchers.** Should the resolver retrieve from
-  (possibly multiple) watchers or other configured sources and compare copies itself
-  (freshness, duplicity → error), or should the client retrieve from each source and make
-  multiple `resolve()` calls, comparing the results? Currently: one DID Log per `resolve()`
-  call, no `watchers` resolution option, no resolver-configured sources, and
-  freshness/duplicity handling is non-normative client guidance. (Earlier drafts had a
-  `watchers` option, a `src` array, and normative resolver-side comparison rules — removed
-  2026-09-25 pending this decision.)
+- **Multiple sources/watchers — decided 2026-10-07.** VH-Log now defines resolver-side
+  copy comparison (Comparing Copies of a Log, Resolution Options), and did:vh adopts its
+  `checkWatchers`/`extraWatchers`/`minCopies` options. Still one client-passed log per
+  `resolve()` call; no resolver-configured sources. Open: review the error names and the
+  `copies`/`warnings` placement in didResolutionMetadata.
 - **Explore `src` naming a DID method (from did:scid).** did:scid lets `src` be a DID method
   that stores the verification data (e.g. `?src=did:cheqd:testnet`, using cheqd DID-Linked
   Resources). did:vh v0.1 supports URLs only (see the note under "The `src` Option"). Broader
