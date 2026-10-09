@@ -208,23 +208,26 @@ check that the client's copy is current and has not been forked.
 
 ##### `did:vh` Resolution Options
 
-In addition to the resolution options defined in [[spec:DID-RESOLUTION]], a
-`did:vh` [[ref: Resolver]] **MUST** recognise the following options, and
-support them as defined in this section. They are
-`did:vh`-specific, and are to be registered in
-[[spec:DID-EXTENSION-RESOLUTION]].
+A `did:vh` [[ref: Resolver]] **MUST** recognise the following options, which
+pass the [[ref: DID Log]] to it. They are `did:vh`-specific, and are to be
+registered in [[spec:DID-EXTENSION-RESOLUTION]].
 
 | Option | Value | Purpose |
 |---|---|---|
 | `didLog` | String | The complete [[ref: DID Log]], in [[ref: JSON Lines]] format. |
 | `didWitness` | JSON array | The witness proofs file content, as defined in VH-Log's [Witness Proofs File](https://swcurran.github.io/VH-Log/next/index.html#the-witness-proofs-file) section. |
 | `src` | String | A reference to the location where `did.jsonl` (and `did-witness.json`) are stored. See [The `src` Option](#the-src-option). |
-| `versionId` | String | As defined in [[spec:DID-RESOLUTION]]: resolve the version with this `versionId`, as defined in VH-Log's [Selecting a Version](https://swcurran.github.io/VH-Log/next/index.html#selecting-a-version) section. |
-| `versionTime` | String | As defined in [[spec:DID-RESOLUTION]]: resolve the version active at this [[ref: ISO8601]] time, as defined in VH-Log's [Selecting a Version](https://swcurran.github.io/VH-Log/next/index.html#selecting-a-version) section. |
-| `versionNumber` | Integer | Resolve the version with this version number, as defined in VH-Log's [Selecting a Version](https://swcurran.github.io/VH-Log/next/index.html#selecting-a-version) section. Less safe than `versionId`; see [Log Freshness and Duplicity](#log-freshness-and-duplicity). |
-| `checkWatchers` | Integer, or the string `all` | Retrieve and compare copies of the [[ref: DID Log]] from this many of the [[ref: watchers]] listed in it, as defined in VH-Log's [Resolution Options](https://swcurran.github.io/VH-Log/next/index.html#resolution-options) section. |
-| `extraWatchers` | Array of strings | Retrieve and compare copies of the [[ref: DID Log]] from these [[ref: watcher]] URLs, as defined in VH-Log's [Resolution Options](https://swcurran.github.io/VH-Log/next/index.html#resolution-options) section. |
-| `minCopies` | Integer | Fail resolution unless at least this many copies of the [[ref: DID Log]] are retrieved and match, as defined in VH-Log's [Resolution Options](https://swcurran.github.io/VH-Log/next/index.html#resolution-options) section. |
+
+A `did:vh` [[ref: Resolver]] also supports the options defined in VH-Log's
+[Resolution
+Options](https://swcurran.github.io/VH-Log/next/index.html#resolution-options)
+section, passed in `resolutionOptions`. `versionId` and `versionTime` are
+defined in [[spec:DID-RESOLUTION]]; `versionNumber`, `checkWatchers`,
+`extraWatchers` and `minCopies` are `did:vh`-specific, and are to be
+registered in [[spec:DID-EXTENSION-RESOLUTION]]. The [[ref: DID Log]] passed
+directly or by reference is the copy from the location defined by the
+[[ref: specialisation]] (VH-Log Resolution Options step 1), and counts
+towards `minCopies`.
 
 The options support two ways of giving the [[ref: Resolver]] the
 [[ref: DID Log]]:
@@ -240,37 +243,23 @@ The options support two ways of giving the [[ref: Resolver]] the
   [[ref: Resolver]] local to its client, a local directory or loopback web
   location.
 
-The following requirements apply to these options:
+In addition to VH-Log's requirements for its options:
 
 - Exactly one of `didLog` and `src` **MUST** be given.
 - `didWitness` **MAY** be given only with `didLog`.
-- At most one of `versionId`, `versionTime` and `versionNumber` **MAY** be
-  given.
-- A value that does not conform to the table above, or to the rules for
-  `src`, **MUST** cause the [[ref: Resolver]] to return the `invalidOptions`
-  error.
+- A malformed option, a value that does not conform to the rules for `src`,
+  or more than one of `versionId`, `versionTime` and `versionNumber`, **MUST**
+  cause the `invalidOptions` error.
 - A [[ref: Resolver]] **MUST** support logs passed directly. It **MAY** decline to
   retrieve from a `src` reference, based on its policy (for example, a
   [[ref: Resolver]] that never retrieves from locations chosen by its
   callers), and then **MUST** return the `featureNotSupported` error, except
   as defined in [Web Locations](#web-locations) and [Local
   Directories](#local-directories).
-- A [[ref: Resolver]] **MUST** support `versionId` and `versionTime`, and
-  **SHOULD** support `versionNumber`, as defined in VH-Log's [Selecting a
-  Version](https://swcurran.github.io/VH-Log/next/index.html#selecting-a-version) section. A
-  [[ref: Resolver]] that does not support `versionNumber` **MUST** return the
-  `featureNotSupported` error when it is given.
-- A [[ref: Resolver]] **SHOULD** support `checkWatchers`, `extraWatchers` and
-  `minCopies`, as defined in VH-Log's [Resolution
-  Options](https://swcurran.github.io/VH-Log/next/index.html#resolution-options) section. A
-  [[ref: Resolver]] that does not support one of them **MUST** return the
-  `featureNotSupported` error when it is given. The [[ref: DID Log]] passed
-  directly or by reference is the first copy (VH-Log Resolution Options
-  step 1), and counts towards `minCopies`.
-- Each `extraWatchers` value **MUST** be an `https` URL. As VH-Log allows, a
-  [[ref: Resolver]] **MAY** refuse or limit `extraWatchers` by policy; a
-  refused URL is reported in the `copies` and `warnings` metadata, not as an
-  error.
+- A VH-Log option the [[ref: Resolver]] does not support **MUST** cause the
+  `featureNotSupported` error. A [[ref: Resolver]] **SHOULD** support
+  `checkWatchers`, `extraWatchers` and `minCopies`.
+- Each `extraWatchers` value **MUST** be an `https` URL.
 
 ::: example
 Passing the log directly, resolving version 2:
@@ -507,17 +496,22 @@ Duplicity](#log-freshness-and-duplicity).
 
 ##### Resolution Algorithm
 
-A `did:vh` [[ref: Resolver]] **MUST** carry out the following steps, which
-apply the Read (Resolve) algorithm defined in [[ref: VH-Log]] with
-`did:vh`-specific additions.
+A `did:vh` [[ref: Resolver]] **MUST** apply VH-Log's [Read
+(Resolve)](https://swcurran.github.io/VH-Log/next/index.html#read-resolve)
+algorithm, including its [Comparing Copies of a
+Log](https://swcurran.github.io/VH-Log/next/index.html#comparing-copies-of-a-log)
+and [Selecting a
+Version](https://swcurran.github.io/VH-Log/next/index.html#selecting-a-version)
+sections, with the following `did:vh`-specific rules:
 
-1. The `did` input **MUST** conform to the ABNF in [Method-Specific
-   Identifier](#method-specific-identifier); if it does not, return the
-   `invalidDid` error.
-2. Validate the `resolutionOptions` as defined in [`did:vh` Resolution
-   Options](#didvh-resolution-options). If they are invalid, return the
-   `invalidOptions` error.
-3. Get the [[ref: DID Log]] according to how it was passed:
+1. **The DID.** The `did` input **MUST** conform to the ABNF in
+   [Method-Specific Identifier](#method-specific-identifier); if it does not,
+   return the `invalidDid` error.
+2. **The options.** Validate the `resolutionOptions` as defined in [`did:vh`
+   Resolution Options](#didvh-resolution-options). If they are invalid,
+   return the `invalidOptions` error.
+3. **Getting the log** (VH-Log Read step 1). Get the [[ref: DID Log]]
+   according to how it was passed:
    - **Directly:** the `didLog` value.
    - **By reference:** retrieve it as defined in [The `src`
      Option](#the-src-option). If the [[ref: DID Log]] is not found, return
@@ -527,37 +521,19 @@ apply the Read (Resolve) algorithm defined in [[ref: VH-Log]] with
    require [[ref: witnesses]]. When it is, use the `didWitness` value if the
    log was passed directly, or retrieve the file from the same `src`
    reference as defined in [The `src` Option](#the-src-option).
-4. Process the [[ref: DID Log]] with the VH-Log Read (Resolve) algorithm,
-   with the following `did:vh`-specific steps:
-   - **Parameters (VH-Log step 1):** `parameters` **MUST** adhere to [`did:vh`
-     DID Method Parameters](#didvh-did-method-parameters).
-   - **Witness verification (VH-Log step 2.1):** If [[ref: witnesses]] are
-     active, verify the witness proofs as defined in [Witnesses](#witnesses).
-   - **State verification (VH-Log step 6):** For every entry, `state.id`
-     **MUST** be exactly `did:vh:` followed by the `scid` [[ref: parameter]]
-     of the first entry, and that [[ref: SCID]] **MUST** equal the
-     [[ref: SCID]] of the `did` input.
-
-   As defined in [[ref: VH-Log]], an entry that fails verification makes it
-   and all later entries invalid, while earlier entries remain valid. If the
-   first entry is invalid, return the `invalidDid` error.
-5. If `checkWatchers`, `extraWatchers` or `minCopies` is given, retrieve and
-   compare further copies of the [[ref: DID Log]] as defined in VH-Log's
-   [Resolution Options](https://swcurran.github.io/VH-Log/next/index.html#resolution-options) and [Comparing
-   Copies of a Log](https://swcurran.github.io/VH-Log/next/index.html#comparing-copies-of-a-log) sections,
-   applying the `did:vh`-specific steps in step 4 to every entry verified. If
-   the log has been forked, return the `logForked` error. If fewer than
-   `minCopies` copies match, return the `insufficientCopies` error. Otherwise,
-   continue with the reference copy.
-6. Select the version to return: the one identified by the `versionId`,
-   `versionTime` or `versionNumber` option if given, or otherwise the latest
-   valid version. If the requested version does not exist or is invalid,
-   return the `notFound` or `invalidDid` error respectively.
-7. Return the [[ref: DIDDoc]] for that version (unless the DID is
-   deactivated, as defined in [Deactivate (Revoke)](#deactivate-revoke)) and
-   the metadata defined below.
-
-[[ref: Resolvers]] **SHOULD NOT** cache a log that fails verification.
+4. **Parameters** (VH-Log Read step 1). `parameters` **MUST** adhere to
+   [`did:vh` DID Method Parameters](#didvh-did-method-parameters).
+5. **Witnesses** (VH-Log Read step 2.1). Witness proofs **MUST** be verified
+   as defined in [Witnesses](#witnesses).
+6. **State** (VH-Log Read step 6). For every entry, `state.id` **MUST** be
+   exactly `did:vh:` followed by the `scid` [[ref: parameter]] of the first
+   entry, and that [[ref: SCID]] **MUST** equal the [[ref: SCID]] of the `did`
+   input. This check applies to every entry verified, including those of
+   further copies retrieved with `checkWatchers` or `extraWatchers`.
+7. **Result.** Return the [[ref: DIDDoc]] (unless the DID is deactivated, as
+   defined in [Deactivate (Revoke)](#deactivate-revoke)) with the metadata
+   defined in [DID Resolution Metadata](#did-resolution-metadata). A failure
+   that VH-Log defines returns the corresponding `error` listed there.
 
 ##### DID Resolution Metadata
 
@@ -956,56 +932,34 @@ A client that obtains copies from more than one source can compare them. If
 one extends the other, the longer is the more current. If neither extends the
 other, the log is **duplicitous**: the client should not rely on any version
 after the last entry the copies have in common, and may keep the conflicting
-entries as evidence and report them, for example to [[ref: watchers]].
+entries as evidence and report them, for example to [[ref: watchers]]. A
+client can also have the [[ref: Resolver]] make these comparisons, with the
+`checkWatchers`, `extraWatchers` and `minCopies` [resolution
+options](#didvh-resolution-options); the [[ref: Resolver]] then fails with
+`logForked` if the log has been forked.
 
-[[ref: Witnesses]] and [[ref: watchers]] address duplicity in different ways:
+[[ref: Witnesses]] and [[ref: watchers]] address duplicity as described in
+VH-Log's
+[Witnesses](https://swcurran.github.io/VH-Log/next/index.html#witnesses) and
+[Watchers](https://swcurran.github.io/VH-Log/next/index.html#watchers)
+sections: [[ref: witnesses]] are expected to approve only an entry that
+extends their own copy of the log, but no one else can confirm that they do,
+while [[ref: watchers]] detect conflicting copies directly, but only the
+copies they see. For `did:vh` these matter more than for `did:webvh`, because
+there is no web location to act as the reference copy. A relying party that
+runs its own [[ref: watcher]], or uses one its ecosystem operates, gets a
+check that is independent of the [[ref: DID Controller]]; `extraWatchers`
+lets it name such [[ref: watchers]] when resolving. [[ref: DID Controllers]]
+of `did:vh` DIDs that are relied on by many parties are encouraged to use
+[[ref: witnesses]] and [[ref: watchers]], and parties relying on such DIDs are
+encouraged to use [[ref: watchers]] they trust.
 
-- **[[ref: Witnesses]]** are expected to approve only an entry that extends
-  their own copy of the log, as defined in VH-Log's [Witnessing a Log Entry
-  Update](https://swcurran.github.io/VH-Log/next/index.html#witnessing-a-log-entry-update). If they do, two
-  conflicting entries can both be [[ref: witnessed]] only if a threshold of
-  [[ref: witnesses]] colludes or is compromised. However, a witness proof
-  shows only that the [[ref: witness]] approved the entry: no one else can
-  confirm that the [[ref: witness]] kept its own copy of the log or checked
-  the entry against it. How far [[ref: witnesses]] reduce duplicity therefore
-  depends on how far they are trusted, which is a matter for ecosystem
-  governance and outside the scope of this specification.
-- **[[ref: Watchers]]** detect duplicity directly. A [[ref: watcher]] that
-  retrieves the [[ref: DID Log]] from each source it knows of, and checks
-  that each copy extends the one it holds, finds conflicting copies without
-  relying on the [[ref: DID Controller]] or the [[ref: witnesses]]. The cost
-  is retrieving and verifying the complete log on each check, and a
-  [[ref: watcher]] can detect only the copies it sees: a conflicting copy
-  given privately to one party is found only when that party shares it, for
-  example by sending it to a [[ref: watcher]]. Any party can run its own
-  [[ref: watcher]]; it need not be one of the [[ref: watchers]] the
-  [[ref: DID Controller]] lists in the log. A relying party that runs its own,
-  or uses one its ecosystem operates, gets a check that is independent of the
-  [[ref: DID Controller]].
-
-A client can also have the [[ref: Resolver]] make these comparisons, with
-the `checkWatchers`, `extraWatchers` and `minCopies` [resolution
-options](#didvh-resolution-options). The [[ref: Resolver]] then retrieves
-copies from the [[ref: watchers]] named, reports how each compares in the
-`copies` and `warnings` metadata, and fails with `logForked` if the log has
-been forked. `checkWatchers` uses the [[ref: watchers]] the
-[[ref: DID Controller]] chose; `extraWatchers` lets the client name
-[[ref: watchers]] it trusts, which is the stronger check against a
-duplicitous [[ref: DID Controller]].
-
-[[ref: DID Controllers]] of `did:vh` DIDs that are relied on by many parties
-are encouraged to use [[ref: witnesses]] and [[ref: watchers]], and parties
-relying on such DIDs are encouraged to use [[ref: watchers]] they trust.
-
-Selecting a version with `versionNumber` is less safe than selecting it with
-`versionId`. A `versionId` includes the [[ref: entry hash]], so it identifies
-exactly one [[ref: DID log entry]], whichever copy of the log is resolved. A
-`versionNumber` identifies an entry only within the copy being resolved: if
-the log is duplicitous, `did:vh:<SCID>?versionNumber=3` can resolve to
-a different [[ref: DIDDoc]] for different parties, while
-`did:vh:<SCID>?versionId=3-Qm...` resolves to one [[ref: DIDDoc]] or fails. A
-client recording which version of a DID it relied on — for example, the key
-that verified a signature — is better served by `versionId`.
+As VH-Log's [Selecting a
+Version](https://swcurran.github.io/VH-Log/next/index.html#selecting-a-version)
+section notes, selecting a version with `versionNumber` is less safe than with
+`versionId`. If the log is duplicitous, `did:vh:<SCID>?versionNumber=3` can
+resolve to a different [[ref: DIDDoc]] for different parties, while
+`did:vh:<SCID>?versionId=3-Qm...` resolves to one [[ref: DIDDoc]] or fails.
 
 ### DID Method Processes
 
