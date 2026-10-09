@@ -1,0 +1,1749 @@
+
+    <!DOCTYPE html>
+    <html lang="en" class="wa-theme-default">
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="color-scheme" content="light dark">
+        
+
+        <title>The did:vh DID Method -- DID + Verifiable History (Editors Draft)</title>
+
+        
+
+        <script>(function(){"use strict";(function(){const r="spec-up-color-scheme",e=document.documentElement,o=window.matchMedia?window.matchMedia("(prefers-color-scheme: dark)"):null;let t="auto";try{const a=window.localStorage.getItem(r);(a==="light"||a==="dark"||a==="auto")&&(t=a)}catch{}const c=t==="auto"?o&&o.matches?"dark":"light":t;e.classList.remove("wa-light","wa-dark"),e.classList.add(c==="dark"?"wa-dark":"wa-light"),e.dataset.theme=c,e.dataset.themePreference=t,e.style.colorScheme=c})()})();</script><link href="assets/compiled/head.css" rel="stylesheet"/><script src="assets/compiled/head.js"></script>
+      </head>
+      <body features="source">
+        <svg id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="svg-github" viewBox="0 0 20 20">
+    <path fill="currentColor" d="M10 0.247c-5.522 0-10 4.477-10 10 0 4.418 2.865 8.167 6.839 9.489 0.5 0.093 0.683-0.217 0.683-0.481 0-0.238-0.009-1.026-0.014-1.862-2.782 0.605-3.369-1.18-3.369-1.18-0.455-1.156-1.11-1.463-1.11-1.463-0.907-0.621 0.069-0.608 0.069-0.608 1.004 0.071 1.533 1.031 1.533 1.031 0.892 1.529 2.339 1.087 2.91 0.831 0.090-0.646 0.349-1.087 0.635-1.337-2.221-0.253-4.556-1.11-4.556-4.942 0-1.092 0.391-1.984 1.030-2.684-0.104-0.252-0.446-1.269 0.097-2.646 0 0 0.84-0.269 2.751 1.025 0.798-0.222 1.653-0.333 2.503-0.337 0.85 0.004 1.706 0.115 2.505 0.337 1.909-1.294 2.747-1.025 2.747-1.025 0.544 1.378 0.202 2.395 0.098 2.646 0.641 0.7 1.029 1.592 1.029 2.684 0 3.841-2.339 4.687-4.566 4.934 0.359 0.31 0.678 0.919 0.678 1.852 0 1.338-0.012 2.415-0.012 2.744 0 0.266 0.18 0.578 0.687 0.48 3.971-1.324 6.833-5.071 6.833-9.488 0-5.523-4.477-10-10-10z"></path>
+  </symbol>
+  <symbol id="spec-up-icon-github" viewBox="0 0 20 20">
+    <path fill="currentColor" d="M10 0.247c-5.522 0-10 4.477-10 10 0 4.418 2.865 8.167 6.839 9.489 0.5 0.093 0.683-0.217 0.683-0.481 0-0.238-0.009-1.026-0.014-1.862-2.782 0.605-3.369-1.18-3.369-1.18-0.455-1.156-1.11-1.463-1.11-1.463-0.907-0.621 0.069-0.608 0.069-0.608 1.004 0.071 1.533 1.031 1.533 1.031 0.892 1.529 2.339 1.087 2.91 0.831 0.090-0.646 0.349-1.087 0.635-1.337-2.221-0.253-4.556-1.11-4.556-4.942 0-1.092 0.391-1.984 1.030-2.684-0.104-0.252-0.446-1.269 0.097-2.646 0 0 0.84-0.269 2.751 1.025 0.798-0.222 1.653-0.333 2.503-0.337 0.85 0.004 1.706 0.115 2.505 0.337 1.909-1.294 2.747-1.025 2.747-1.025 0.544 1.378 0.202 2.395 0.098 2.646 0.641 0.7 1.029 1.592 1.029 2.684 0 3.841-2.339 4.687-4.566 4.934 0.359 0.31 0.678 0.919 0.678 1.852 0 1.338-0.012 2.415-0.012 2.744 0 0.266 0.18 0.578 0.687 0.48 3.971-1.324 6.833-5.071 6.833-9.488 0-5.523-4.477-10-10-10z"></path>
+  </symbol>
+  <symbol id="svg-nested-list" viewBox="0 0 37 32">
+    <path d="M0 2.286c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM9.143 0h27.429v4.571h-27.429zM9.143 11.429c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM18.286 9.143h18.286v4.571h-18.286zM9.143 29.714c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM18.286 27.429h18.286v4.571h-18.286zM18.286 20.571c0-1.262 1.023-2.286 2.286-2.286s2.286 1.023 2.286 2.286c0 1.262-1.023 2.286-2.286 2.286s-2.286-1.023-2.286-2.286zM27.429 18.286h9.143v4.571h-9.143z"></path>
+  </symbol>
+  <symbol id="spec-up-icon-bars" viewBox="0 0 24 24">
+    <rect x="3" y="5" width="18" height="2" rx="1" fill="currentColor"></rect>
+    <rect x="3" y="11" width="18" height="2" rx="1" fill="currentColor"></rect>
+    <rect x="3" y="17" width="18" height="2" rx="1" fill="currentColor"></rect>
+  </symbol>
+  <symbol id="spec-up-icon-search" viewBox="0 0 24 24">
+    <circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></circle>
+    <path d="M16 16l4.5 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+  </symbol>
+  <symbol id="spec-up-icon-sun" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"></circle>
+    <path d="M12 2.5v2.5M12 19v2.5M4.5 12H2m20 0h-2.5M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+  </symbol>
+  <symbol id="spec-up-icon-moon" viewBox="0 0 24 24">
+    <path d="M19.5 14.25A8.25 8.25 0 0 1 9.75 4.5a8.27 8.27 0 0 0 4.5 15.18 8.2 8.2 0 0 0 5.25-1.88z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path>
+  </symbol>
+  <symbol id="spec-up-icon-circle-info" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"></circle>
+    <circle cx="12" cy="8" r="1.25" fill="currentColor"></circle>
+    <path d="M12 11v5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+  </symbol>
+  <symbol id="spec-up-icon-circle-exclamation" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"></circle>
+    <path d="M12 7v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    <circle cx="12" cy="17" r="1.25" fill="currentColor"></circle>
+  </symbol>
+  <symbol id="spec-up-icon-triangle-exclamation" viewBox="0 0 24 24">
+    <path d="M12 3.5l9 16a1 1 0 0 1-.87 1.5H3.87A1 1 0 0 1 3 19.5l9-16z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path>
+    <path d="M12 9v5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    <circle cx="12" cy="17.25" r="1.1" fill="currentColor"></circle>
+  </symbol>
+  <symbol id="spec-up-icon-circle-check" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"></circle>
+    <path d="M8 12.5l2.5 2.5 5.5-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+  </symbol>
+</svg>
+
+
+        <wa-page class="spec-up-shell" mobile-breakpoint="1080" disable-navigation-toggle>
+
+          <header slot="header" id="app_header">
+            <div class="spec-up-brand">
+              <wa-button data-toggle-nav size="small" appearance="plain" variant="neutral" class="spec-up-nav-toggle" aria-label="Open table of contents">
+                <wa-icon library="spec-up" name="bars"></wa-icon>
+              </wa-button>
+              <span class="spec-up-brand-mark spec-up-brand-mark--placeholder" aria-hidden="true">SU</span>
+              <div class="spec-up-brand-copy">
+                <strong>The did:vh DID Method -- DID + Verifiable History (Editors Draft)</strong>
+              </div>
+            </div>
+            
+      <div class="spec-up-header-actions">
+        <wa-dropdown id="spec_up_theme_selector" class="spec-up-theme-selector color-scheme-selector" size="small" placement="bottom-start">
+          <wa-button
+            slot="trigger"
+            id="color-scheme-selector-trigger"
+            class="spec-up-theme-selector__trigger"
+            appearance="plain"
+            aria-label="Color theme"
+            variant="neutral"
+            size="small"
+          >
+            <wa-icon library="spec-up" name="sun" class="icon-embiggen only-light" aria-hidden="true"></wa-icon>
+            <wa-icon library="spec-up" name="moon" class="icon-embiggen only-dark" aria-hidden="true"></wa-icon>
+          </wa-button>
+          <wa-dropdown-item value="light">
+            <wa-icon library="spec-up" slot="icon" name="sun" class="icon-embiggen" aria-hidden="true"></wa-icon>
+            Light
+          </wa-dropdown-item>
+          <wa-dropdown-item value="dark">
+            <wa-icon library="spec-up" slot="icon" name="moon" class="icon-embiggen" aria-hidden="true"></wa-icon>
+            Dark
+          </wa-dropdown-item>
+          <wa-divider></wa-divider>
+          <wa-dropdown-item value="auto">
+            <wa-icon library="spec-up" slot="icon" name="sun" class="only-light icon-embiggen" aria-hidden="true"></wa-icon>
+            <wa-icon library="spec-up" slot="icon" name="moon" class="only-dark icon-embiggen" aria-hidden="true"></wa-icon>
+            System
+          </wa-dropdown-item>
+        </wa-dropdown>
+        
+        <wa-button class="spec-up-issues-trigger" size="small" appearance="outlined" variant="neutral" data-drawer="open repo_issues_drawer">
+          <wa-icon library="spec-up" name="github"></wa-icon>
+          Issues
+        </wa-button>
+    
+      </div>
+  
+          </header>
+
+          <div slot="navigation-header" class="spec-up-navigation-title">
+            <strong>The did:vh DID Method -- DID + Verifiable History (Editors Draft)</strong>
+          </div>
+
+          <nav id="toc" slot="navigation" aria-label="Table of contents">
+            <ul class="toc"><li><a href="#abstract">Abstract</a></li><li><a href="#overview">Overview</a><ul><li><a href="#relationship-to-didscid">Relationship to `did:scid`</a></li></ul></li><li><a href="#didvh-did-method-specification">`did:vh` DID Method Specification</a><ul><li><a href="#conformance">Conformance</a></li><li><a href="#relationship-to-vh-log-and-didwebvh">Relationship to VH-Log and `did:webvh`</a></li><li><a href="#target-system">Target System</a></li><li><a href="#method-name">Method Name</a></li><li><a href="#method-specific-identifier">Method-Specific Identifier</a></li><li><a href="#the-did-log-file">The DID Log File</a></li><li><a href="#did-method-operations">DID Method Operations</a><ul><li><a href="#create-register">Create (Register)</a></li><li><a href="#read-resolve">Read (Resolve)</a></li><li><a href="#update-rotate">Update (Rotate)</a></li><li><a href="#deactivate-revoke">Deactivate (Revoke)</a></li></ul></li><li><a href="#sourcing-the-did-log">Sourcing the DID Log</a><ul><li><a href="#known-in-context">Known in Context</a></li><li><a href="#from-watchers">From Watchers</a></li><li><a href="#peer-to-peer-exchange">Peer-to-Peer Exchange</a></li><li><a href="#from-a-web-location">From a Web Location</a></li><li><a href="#advertising-did-log-sources">Advertising DID Log Sources</a></li><li><a href="#log-freshness-and-duplicity">Log Freshness and Duplicity</a></li></ul></li><li><a href="#did-method-processes">DID Method Processes</a><ul><li><a href="#didvh-did-method-parameters">`did:vh` DID Method Parameters</a></li><li><a href="#cryptographic-agility">Cryptographic Agility</a></li><li><a href="#scid-generation-and-verification">SCID Generation and Verification</a></li><li><a href="#entry-hash-generation-and-verification">Entry Hash Generation and Verification</a></li><li><a href="#authorized-keys-and-pre-rotation">Authorized Keys and Pre-Rotation</a></li><li><a href="#witnesses">Witnesses</a></li><li><a href="#watchers">Watchers</a></li></ul></li></ul></li><li><a href="#security-considerations">Security Considerations</a><ul><li><a href="#no-authoritative-location">No Authoritative Location</a></li><li><a href="#the-src-option-and-other-client-supplied-values">The `src` Option and Other Client-Supplied Values</a></li><li><a href="#endpoint-authentication">Endpoint Authentication</a></li><li><a href="#peer-to-peer-use">Peer-to-Peer Use</a></li><li><a href="#post-quantum-attacks">Post Quantum Attacks</a></li><li><a href="#resolver-validation-checklist">Resolver Validation Checklist</a></li></ul></li><li><a href="#privacy-considerations">Privacy Considerations</a><ul><li><a href="#surveillance">Surveillance</a></li><li><a href="#correlation-and-identification">Correlation and Identification</a></li><li><a href="#right-to-erasure-gdpr-art-17httpsgdpr-infoeuart-17-gdpr">Right to Erasure ([GDPR Art. 17](https://gdpr-info.eu/art-17-gdpr/))</a></li></ul></li><li><a href="#definitions">Definitions</a></li><li><a href="#references">References</a></li><li><a href="#didvh-version-changelog">`did:vh` Version Changelog</a></li></ul>
+          </nav>
+
+          <main class="spec-up-main">
+            <article id="content">
+              <h1 id="the-didvh-did-methodbrv01-editors-draft"><span class="spec-up-heading-text">The <code>did:vh</code> DID Method<br>v0.1 / Editors Draft</span><a class="toc-anchor" href="#the-didvh-did-methodbrv01-editors-draft">§</a></h1>
+<p><strong>Specification Status:</strong> Editors Draft</p>
+<p><strong>Specification Version:</strong> v0.1 (see <a href="#didvh-version-changelog">Changelog</a>)</p>
+<p><strong>Source of Latest Draft:</strong>
+<a path-0="github.com" path-1="swcurran" path-2="didvh" href="https://github.com/swcurran/didvh">https://github.com/swcurran/didvh</a></p>
+<dl>
+<dt><strong>Editors:</strong></dt>
+<dd><a path-0="github.com" path-1="swcurran" href="https://github.com/swcurran">Stephen Curran</a></dd>
+<dt><strong>Participate:</strong></dt>
+<dd><a path-0="github.com" path-1="swcurran" path-2="didvh" href="https://github.com/swcurran/didvh">GitHub repo</a></dd>
+<dd><a path-0="github.com" path-1="swcurran" path-2="didvh" path-3="issues" href="https://github.com/swcurran/didvh/issues">File a bug</a></dd>
+<dd><a path-0="github.com" path-1="swcurran" path-2="didvh" path-3="commits" path-4="main" href="https://github.com/swcurran/didvh/commits/main">Commit history</a></dd>
+<dt><strong>Related Specifications:</strong></dt>
+<dd><a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html" href="https://swcurran.github.io/VH-Log/next/index.html">VH-Log</a> — the log mechanism <code>did:vh</code> specialises</dd>
+<dd><a path-0="identity.foundation" path-1="didwebvh" path-2="" href="https://identity.foundation/didwebvh/">did:webvh</a> — the web-located sibling of <code>did:vh</code></dd>
+</dl>
+<hr>
+<h2 id="abstract"><span class="spec-up-heading-text">Abstract</span><a class="toc-anchor" href="#abstract">§</a></h2>
+<p><code>did:vh</code> (DID + Verifiable History) is a <a class="term-reference" href="#term:did-method">DID Method</a> defined as a
+<a class="term-reference" href="#term:specialisation">specialisation</a> of the <a class="term-reference" href="#term:vh-log">VH-Log</a> specification. It is the
+location-independent sibling of <code>did:webvh</code>: a <code>did:vh</code> DID is simply</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-text spec-up-code-block"><code class="language-text" id="spec-up-code-copy-target-1">did:vh:&lt;SCID&gt;
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-1" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<p>where <code>&lt;SCID&gt;</code> is the <a class="term-reference" href="#term:self-certifying-identifier">self-certifying identifier</a> derived from the DID’s
+first <a class="term-reference" href="#term:did-log-entry">DID log entry</a>. Unlike <code>did:webvh</code>, a <code>did:vh</code> DID contains no
+domain name or path, and so is not bound to any location where its
+<a class="term-reference" href="#term:did-log">DID Log</a> is published.</p>
+<p><code>did:vh</code> constrains VH-Log by specifying:</p>
+<ul>
+<li>The <a class="term-reference" href="#term:state">state</a> object is a W3C DID Document (<a class="term-reference" href="#term:diddoc">DIDDoc</a>).</li>
+<li>The log file is named <code>did.jsonl</code>, and the witness proofs file
+<code>did-witness.json</code>, as in <code>did:webvh</code>.</li>
+<li>The DID identifier is the method prefix and the <a class="term-reference" href="#term:scid">SCID</a>, nothing else.</li>
+</ul>
+<p>Because the DID carries no location, sourcing the <a class="term-reference" href="#term:did-log">DID Log</a> is
+separated from resolving the DID. A <code>did:vh</code> <a class="term-reference" href="#term:resolver">Resolver</a> implements the
+standard DID Resolution <code>resolve(did, resolutionOptions)</code> function: the client
+passes the <a class="term-reference" href="#term:did-log">DID Log</a> and witness proofs directly, or by reference in the
+<a href="#the-src-option"><code>src</code> option</a>, as <a href="#didvh-resolution-options">resolution
+options</a>, and the <a class="term-reference" href="#term:resolver">Resolver</a> verifies the log
+and returns the <a class="term-reference" href="#term:diddoc">DIDDoc</a>. How a client sources the <a class="term-reference" href="#term:did-log">DID Log</a>
+beforehand — getting the log itself or a reference to it, because it is
+<a href="#known-in-context">known in context</a>, from a <a class="term-reference" href="#term:watcher">watcher</a>, <a href="#peer-to-peer-exchange">exchanged
+peer-to-peer</a>, or from a web location — is described
+non-normatively, and a DID Log sourced in any of these ways is verified in
+exactly the same way. The
+<a class="term-reference" href="#term:scid">SCID</a> guarantees that the log is the authentic history of the DID,
+wherever it came from.</p>
+<p>Through VH-Log, <code>did:vh</code> provides the same verifiable-history features as
+<code>did:webvh</code>:</p>
+<ul>
+<li>A <a class="term-reference" href="#term:self-certifying-identifier">self-certifying identifier</a> (SCID), globally unique and derived
+from the initial <a class="term-reference" href="#term:did-log-entry">DID log entry</a>, binding the DID to its full history.</li>
+<li>The ability to resolve the full history of the DID using a verifiable chain
+of updates to the <a class="term-reference" href="#term:diddoc">DIDDoc</a>, from creation to deactivation.</li>
+<li><a class="term-reference" href="#term:diddoc">DIDDoc</a> updates containing a proof signed by a
+<a class="term-reference" href="#term:did-controller">DID Controller</a>-authorized key.</li>
+<li>An optional mechanism for publishing pre-rotation key hashes to prevent loss
+of control of a DID when an active private key is compromised.</li>
+<li>An optional mechanism for having collaborating <a class="term-reference" href="#term:witnesses">witnesses</a> approve
+updates to the DID before publication.</li>
+<li>Support for cryptographic agility through versioned specification upgrades
+and algorithm-identifying formats.</li>
+<li>An optional mechanism for listing <a class="term-reference" href="#term:watchers">watchers</a> that archive and re-serve
+the DID’s history.</li>
+</ul>
+<p>Separating the identifier from the location of its history gives <code>did:vh</code>
+properties that a web-located DID cannot have:</p>
+<ul>
+<li><strong>Permanence.</strong> The DID never has to change because the place its history is
+kept changes. There is no need for a portability mechanism.</li>
+<li><strong>Location independence.</strong> The <a class="term-reference" href="#term:did-log">DID Log</a> can be kept on a web server,
+with a <a class="term-reference" href="#term:watcher">watcher</a>, in a database, on a distributed ledger, or only in
+the wallets of the parties to a relationship — and in several such places at
+once.</li>
+<li><strong>Peer-to-peer use.</strong> A <code>did:vh</code> DID can be used between two parties who
+exchange their <a class="term-reference" href="#term:did-logs">DID Logs</a> directly, in the manner of <code>did:peer</code> [<a class="spec-reference" href="#ref:DID-PEER">DID-PEER</a>], while
+still supporting key rotation, pre-rotation and the other VH-Log features.</li>
+</ul>
+<p><code>did:vh</code> is comparable to the <code>did:scid:vh</code> format of the proposed
+<a path-0="lf-toip.atlassian.net" path-1="wiki" path-2="spaces" path-3="HOME" path-4="pages" path-5="88572360" path-6="DID+SCID+Method+Specification" href="https://lf-toip.atlassian.net/wiki/spaces/HOME/pages/88572360/DID+SCID+Method+Specification"><code>did:scid</code></a>
+metamethod, and adopts its <code>src</code> parameter.</p>
+<h2 id="overview"><span class="spec-up-heading-text">Overview</span><a class="toc-anchor" href="#overview">§</a></h2>
+<p><code>did:webvh</code> added a verifiable history to <code>did:web</code>: a <a class="term-reference" href="#term:self-certifying-identifier">self-certifying identifier</a>
+(SCID), a hash-chained log of every version of the <a class="term-reference" href="#term:diddoc">DIDDoc</a>,
+signed updates, pre-rotation, <a class="term-reference" href="#term:witnesses">witnesses</a> and <a class="term-reference" href="#term:watchers">watchers</a>. It kept
+the domain name from <code>did:web</code> in the DID, so that a <a class="term-reference" href="#term:resolver">Resolver</a> can turn
+the DID into an HTTPS URL and fetch the <a class="term-reference" href="#term:did-log">DID Log</a>.</p>
+<p>The domain name does two jobs in <code>did:webvh</code>: it tells a <a class="term-reference" href="#term:resolver">Resolver</a>
+where to find the log, and it makes the DID a web identifier. It is not needed
+for security — the <a class="term-reference" href="#term:scid">SCID</a> and the verifiable history provide that on
+their own. But it does tie the DID to one location. When that location
+changes, the DID changes, which <code>did:webvh</code> handles with its optional
+portability mechanism, at the cost of a DID that is no longer the same string.</p>
+<p>Many uses of DIDs need an identifier that never changes: as a permanent
+account identifier, embedded in content-addressed data, or held in long-lived
+credentials. Others have no web location at all: DIDs exchanged between two
+parties, DIDs kept in an organisation’s database, or DIDs anchored on a
+ledger. <code>did:vh</code> serves those uses by removing the location from the DID:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-text spec-up-code-block"><code class="language-text" id="spec-up-code-copy-target-2">did:webvh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ:example.com:dids:issuer
+did:vh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-2" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<p>Everything else is kept as close to <code>did:webvh</code> as makes sense. The <a class="term-reference" href="#term:did">DID</a> format, <a class="term-reference" href="#term:parameters">parameters</a>, <a class="term-reference" href="#term:scid">SCID</a> and entry-hash algorithms,
+key authorisation and pre-rotation, <a class="term-reference" href="#term:witnesses">witnesses</a>, <a class="term-reference" href="#term:watchers">watchers</a>, and
+DID URL query parameters are those of <a class="term-reference" href="#term:vh-log">VH-Log</a> as used by <code>did:webvh</code>.
+Implementations of <code>did:webvh</code> should be able to support <code>did:vh</code> by replacing
+the DID-to-HTTPS transformation with the <a href="#sourcing-the-did-log">DID Log
+sources</a> defined here and dropping the
+web-location-specific features.</p>
+<p>The following is a <code>tl;dr</code> summary of how <code>did:vh</code> works:</p>
+<ol>
+<li>A <a class="term-reference" href="#term:did-controller">DID Controller</a> creates the first <a class="term-reference" href="#term:did-log-entry">DID log entry</a> exactly as
+in <code>did:webvh</code>, using the DID string <code>did:vh:{SCID}</code> with the <code>{SCID}</code>
+placeholder, calculates the <a class="term-reference" href="#term:scid">SCID</a> and replaces the placeholders.</li>
+<li>The <a class="term-reference" href="#term:did-log">DID Log</a> (<code>did.jsonl</code>) is a <a class="term-reference" href="#term:json-lines">JSON Lines</a> file of
+<a class="term-reference" href="#term:did-log-entries">DID log entries</a>, each containing a <code>versionId</code>, <code>versionTime</code>,
+<code>parameters</code>, <code>state</code> (the <a class="term-reference" href="#term:diddoc">DIDDoc</a>) and a <a class="term-reference" href="#term:data-integrity">Data Integrity</a>
+proof, as defined in <a class="term-reference" href="#term:vh-log">VH-Log</a>.</li>
+<li>The <a class="term-reference" href="#term:did-controller">DID Controller</a> makes the <a class="term-reference" href="#term:did-log">DID Log</a> available wherever it
+is needed: to the other party in a relationship, to one or more
+<a class="term-reference" href="#term:watchers">watchers</a>, at one or more web locations, or in any other store.
+There is no single authoritative location.</li>
+<li>A client that needs to resolve <code>did:vh:&lt;SCID&gt;</code> first
+<a href="#sourcing-the-did-log">sources</a> the <a class="term-reference" href="#term:did-log">DID Log</a>: it gets the log
+itself from context, a <a class="term-reference" href="#term:watcher">watcher</a> or a peer, or a reference to it,
+such as the web location given in
+<code>did:vh:&lt;SCID&gt;?src=https://example.com/dids/issuer</code>.</li>
+<li>The client calls the <a class="term-reference" href="#term:resolver">Resolver</a>, <a href="#didvh-resolution-options">passing</a>
+the <a class="term-reference" href="#term:did-log">DID Log</a> (and witness proofs) directly, or by reference in the
+<code>src</code> option. The <a class="term-reference" href="#term:resolver">Resolver</a> verifies the log with the
+<a class="term-reference" href="#term:vh-log">VH-Log</a> algorithm and returns the <a class="term-reference" href="#term:diddoc">DIDDoc</a>. The
+<a class="term-reference" href="#term:scid">SCID</a> check ensures the log is the history of that DID, regardless
+of where it came from.</li>
+<li>Updates append entries to the log, which the <a class="term-reference" href="#term:did-controller">DID Controller</a>
+re-distributes to the places the log is kept.</li>
+</ol>
+<p>Because a <code>did:vh</code> <a class="term-reference" href="#term:did-log">DID Log</a> has no single authoritative location, a
+<a class="term-reference" href="#term:resolver">Resolver</a> cannot always be sure it holds the <em>latest</em> version of the
+log, and a <a class="term-reference" href="#term:did-controller">DID Controller</a> could give different parties different
+extensions of the same log. <a class="term-reference" href="#term:watchers">Watchers</a> and <a class="term-reference" href="#term:witnesses">witnesses</a> are the
+tools <code>did:vh</code> uses to manage those risks; see <a href="#log-freshness-and-duplicity">Log Freshness and
+Duplicity</a>.</p>
+<h3 id="relationship-to-didscid"><span class="spec-up-heading-text">Relationship to <code>did:scid</code></span><a class="toc-anchor" href="#relationship-to-didscid">§</a></h3>
+<p>The proposed
+<a path-0="lf-toip.atlassian.net" path-1="wiki" path-2="spaces" path-3="HOME" path-4="pages" path-5="88572360" path-6="DID+SCID+Method+Specification" href="https://lf-toip.atlassian.net/wiki/spaces/HOME/pages/88572360/DID+SCID+Method+Specification"><code>did:scid</code></a>
+metamethod defines a family of location-independent DIDs, each using the
+verification data format of an existing SCID-based DID method. Its
+<code>did:scid:vh</code> format uses the <code>did:webvh</code> format, and so is comparable to
+<code>did:vh</code>:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-text spec-up-code-block"><code class="language-text" id="spec-up-code-copy-target-3">did:scid:vh:1:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ
+did:vh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-3" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<p><code>did:vh</code> shares the design goals of <code>did:scid</code> — a permanent, portable,
+self-certifying DID whose history can be kept in any number of locations — and
+adopts its <code>src</code> parameter for passing the log by reference, as both a resolution
+option and a DID URL query parameter. The
+differences are:</p>
+<ul>
+<li><code>did:vh</code> is a standalone DID method rather than a format of a metamethod.</li>
+<li>The version of the specification in use is carried in the <code>method</code>
+<a class="term-reference" href="#term:parameter">parameter</a> of the <a class="term-reference" href="#term:did-log">DID Log</a>, as in <code>did:webvh</code>, rather than in
+the DID string.</li>
+<li>In this version of <code>did:vh</code>, the <code>src</code> parameter carries only a URL: an
+<code>https</code> URL, a URL with another scheme the <a class="term-reference" href="#term:resolver">Resolver</a> supports (such
+as <code>ipns</code>), or, as a resolution option to a local <a class="term-reference" href="#term:resolver">Resolver</a>, a
+loopback <code>http</code> URL or a <code>file:</code> URL for a local directory. <code>did:scid</code> also
+allows it to name a DID method that stores the log.</li>
+</ul>
+<p>Because the DID string is part of the first <a class="term-reference" href="#term:did-log-entry">DID log entry</a>, and so of
+the input to the <a class="term-reference" href="#term:scid">SCID</a>, a <code>did:vh</code>, a <code>did:scid:vh</code> and a <code>did:webvh</code>
+DID can never share a <a class="term-reference" href="#term:did-log">DID Log</a> or an <a class="term-reference" href="#term:scid">SCID</a>. A
+<a class="term-reference" href="#term:did-controller">DID Controller</a> can link such DIDs using <code>alsoKnownAs</code>.</p>
+<h2 id="didvh-did-method-specification"><span class="spec-up-heading-text"><code>did:vh</code> DID Method Specification</span><a class="toc-anchor" href="#didvh-did-method-specification">§</a></h2>
+<h3 id="conformance"><span class="spec-up-heading-text">Conformance</span><a class="toc-anchor" href="#conformance">§</a></h3>
+<p>As well as sections marked as non-normative, all examples, notes, and
+informative checklists in this specification are non-normative. Everything
+else in this specification is normative.</p>
+<p>The key words <strong>MAY</strong>, <strong>MUST</strong>, <strong>MUST NOT</strong>, <strong>NOT REQUIRED</strong>,
+<strong>RECOMMENDED</strong>, <strong>REQUIRED</strong>, <strong>SHOULD</strong>, and <strong>SHOULD NOT</strong> in this
+specification are to be interpreted as described in BCP 14 [<a class="spec-reference" href="#ref:RFC2119">RFC2119</a>]
+[<a class="spec-reference" href="#ref:RFC8174">RFC8174</a>] when, and only when, they appear in all capitals, as shown
+here.</p>
+<h3 id="relationship-to-vh-log-and-didwebvh"><span class="spec-up-heading-text">Relationship to VH-Log and <code>did:webvh</code></span><a class="toc-anchor" href="#relationship-to-vh-log-and-didwebvh">§</a></h3>
+<p><code>did:vh</code> is a <a class="term-reference" href="#term:specialisation">specialisation</a> of the <a class="term-reference" href="#term:vh-log">VH-Log</a> specification.
+VH-Log defines the log mechanism underlying <code>did:vh</code> — the log entry structure,
+cryptographic chaining, <a class="term-reference" href="#term:scid">SCID</a>, <a class="term-reference" href="#term:parameters">parameters</a>, <a class="term-reference" href="#term:witnesses">witnesses</a>,
+<a class="term-reference" href="#term:watchers">watchers</a>, and the resolution algorithm. This specification defines
+only what is specific to <code>did:vh</code>, and implementers <strong>MUST</strong> consult
+<a class="term-reference" href="#term:vh-log">VH-Log</a> for the normative definition of the log mechanism.</p>
+<p><code>did:vh</code> constrains VH-Log by:</p>
+<ul>
+<li>Specifying the <a class="term-reference" href="#term:state">state</a> object as a W3C DID Document (<a class="term-reference" href="#term:diddoc">DIDDoc</a>).</li>
+<li>Naming the log file <code>did.jsonl</code> and the witness proofs file
+<code>did-witness.json</code>.</li>
+<li>Defining the DID as <code>did:vh:&lt;SCID&gt;</code>, with no location component.</li>
+<li>Defining how the <a class="term-reference" href="#term:did-log">DID Log</a> is <a href="#sourcing-the-did-log">sourced</a> and
+passed to a <a class="term-reference" href="#term:resolver">Resolver</a> as <code>did:vh</code> resolution options, including
+the <code>src</code> option.</li>
+<li>Using <code>method</code> (e.g., <code>did:vh:1.0</code>) as the <code>did:vh</code>-specific form of the
+VH-Log <code>logVersion</code> parameter.</li>
+<li>Defining the DID method identifier, CRUD operations and DID URL handling.</li>
+</ul>
+<p><code>did:vh</code> is deliberately as close to
+<a path-0="identity.foundation" path-1="didwebvh" path-2="" href="https://identity.foundation/didwebvh/"><code>did:webvh</code></a> as its lack of a location allows.
+The differences are:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>did:webvh</code></th>
+<th><code>did:vh</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DID</td>
+<td><code>did:webvh:&lt;SCID&gt;:&lt;domain&gt;[:&lt;path&gt;]</code></td>
+<td><code>did:vh:&lt;SCID&gt;</code></td>
+</tr>
+<tr>
+<td>Locating the <a class="term-reference" href="#term:did-log">DID Log</a></td>
+<td>DID-to-HTTPS transformation</td>
+<td>Passed to the <a class="term-reference" href="#term:resolver">Resolver</a> in <a href="#didvh-resolution-options">resolution options</a>, after the client <a href="#sourcing-the-did-log">sources it</a></td>
+</tr>
+<tr>
+<td><code>method</code> values</td>
+<td><code>did:webvh:1.0</code></td>
+<td><code>did:vh:1.0</code></td>
+</tr>
+<tr>
+<td><code>portable</code> parameter</td>
+<td>Optional</td>
+<td>Not used — the DID never changes</td>
+</tr>
+<tr>
+<td>Implicit <code>#files</code> and <code>#whois</code> services</td>
+<td>Derived from the HTTPS location</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Parallel <code>did:web</code></td>
+<td>Optional</td>
+<td>Not applicable</td>
+</tr>
+</tbody>
+</table>
+<p>The log format, <a class="term-reference" href="#term:scid">SCID</a> and <a class="term-reference" href="#term:entry-hash">entry hash</a> algorithms, key
+authorisation, pre-rotation, witness identifiers (<code>did:key</code>), witness file
+format, and the <code>versionId</code>, <code>versionTime</code> and <code>versionNumber</code> DID URL query
+parameters are the same in both methods.</p>
+<h3 id="target-system"><span class="spec-up-heading-text">Target System</span><a class="toc-anchor" href="#target-system">§</a></h3>
+<p><code>did:vh</code> does not have a single target system. A <code>did:vh</code> <a class="term-reference" href="#term:did-log">DID Log</a> can
+be held by any system that can store and return a file: a web server, a
+<a class="term-reference" href="#term:watcher">watcher</a>, a database or registry, a distributed ledger, or the wallets
+of the parties that use the DID. The <a class="term-reference" href="#term:scid">SCID</a> and the verifiable history
+make the <a class="term-reference" href="#term:did-log">DID Log</a> verifiable no matter which of those systems it was
+obtained from.</p>
+<h3 id="method-name"><span class="spec-up-heading-text">Method Name</span><a class="toc-anchor" href="#method-name">§</a></h3>
+<p>The namestring that identifies this DID method is: <code>vh</code>. A DID that uses this
+method <strong>MUST</strong> begin with the prefix <code>did:vh:</code>. Per the DID specification, the
+prefix <strong>MUST</strong> be in lowercase. The remainder of the DID, after the prefix, is
+the <a href="#method-specific-identifier">method-specific identifier</a>.</p>
+<h3 id="method-specific-identifier"><span class="spec-up-heading-text">Method-Specific Identifier</span><a class="toc-anchor" href="#method-specific-identifier">§</a></h3>
+<p>The <code>did:vh</code> method-specific identifier is the <a class="term-reference" href="#term:scid">SCID</a> of the DID, and
+nothing else. The <a class="term-reference" href="#term:scid">SCID</a> <strong>MUST</strong> be
+<a href="#scid-generation-and-verification">generated</a> during the creation of the DID
+from its initial content.</p>
+<p>A <code>did:vh</code> DID <strong>MUST</strong> conform to the following ABNF [<a class="spec-reference" href="#ref:RFC5234">RFC5234</a>]:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-abnf spec-up-code-block"><code class="language-abnf" id="spec-up-code-copy-target-4"><span class="token definition keyword">vh-did</span> <span class="token operator">=</span> <span class="token string">"did:vh:"</span> <span class="token rule">scid</span>
+<span class="token definition keyword">scid</span>   <span class="token operator">=</span> <span class="token repetition operator">46</span><span class="token rule">base58-char</span>
+<span class="token definition keyword">base58-char</span> <span class="token operator">=</span> <span class="token range number">%x31-39</span> <span class="token operator">/</span> <span class="token range number">%x41-48</span> <span class="token operator">/</span> <span class="token range number">%x4A-4E</span> <span class="token operator">/</span> <span class="token range number">%x50-5A</span> <span class="token operator">/</span> <span class="token range number">%x61-6B</span> <span class="token operator">/</span> <span class="token range number">%x6D-7A</span>
+              <span class="token comment">; the base58btc alphabet: 1-9, A-Z except I and O,</span>
+              <span class="token comment">; a-z except l</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-4" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<p>A <code>did:vh</code> DID URL follows the generic DID URL syntax of [<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>],
+with the addition of the optional <a href="#the-src-option"><code>src</code></a> query
+parameter.</p>
+<wa-callout id="example-1" class="spec-up-notice spec-up-notice--example" variant="neutral" appearance="filled-outlined"><div class="spec-up-notice-heading"><a class="notice-link" href="#example-1">EXAMPLE</a></div><p>A <code>did:vh</code> DID, and DID URLs using the <code>src</code> and <code>versionNumber</code> query
+parameters and a fragment:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-text spec-up-code-block"><code class="language-text" id="spec-up-code-copy-target-5">did:vh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ
+did:vh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ?src=https://example.com/dids/issuer
+did:vh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ?versionNumber=3
+did:vh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ#key-1
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-5" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+</wa-callout>
+<h3 id="the-did-log-file"><span class="spec-up-heading-text">The DID Log File</span><a class="toc-anchor" href="#the-did-log-file">§</a></h3>
+<p>The <code>did:vh</code> <a class="term-reference" href="#term:did-log">DID Log</a> is a <a class="term-reference" href="#term:vh-log">VH-Log</a> log file. The log entry
+structure, <a class="term-reference" href="#term:json-lines">JSON Lines</a> serialisation, cryptographic chaining, and
+verification algorithm are all as defined in <a class="term-reference" href="#term:vh-log">VH-Log</a>. This includes
+VH-Log’s requirement that <code>versionTime</code> values are in whole seconds, with no
+fractional seconds, as in <code>did:webvh</code>.</p>
+<p>The <code>did:vh</code>-specific constraints are:</p>
+<ul>
+<li>When the log is stored as a file, it <strong>SHOULD</strong> be named <code>did.jsonl</code>, and
+<strong>MUST</strong> be named <code>did.jsonl</code> when stored at a location named by a <a href="#the-src-option"><code>src</code>
+reference</a>. Its media type <strong>SHOULD</strong> be
+<code>text/jsonl</code>.</li>
+<li>The witness proofs file, when stored as a file, <strong>SHOULD</strong> be named
+<code>did-witness.json</code>, and <strong>MUST</strong> be named <code>did-witness.json</code> when stored at
+a location named by a <code>src</code> reference.</li>
+<li>The <code>state</code> property of each entry <strong>MUST</strong> contain the <a class="term-reference" href="#term:diddoc">DIDDoc</a> for
+that version of the DID.</li>
+<li>The <code>parameters</code> property <strong>MUST</strong> follow <a href="#didvh-did-method-parameters"><code>did:vh</code> DID Method
+Parameters</a>.</li>
+</ul>
+<wa-callout id="example-2" class="spec-up-notice spec-up-notice--example" variant="neutral" appearance="filled-outlined"><div class="spec-up-notice-heading"><a class="notice-link" href="#example-2">EXAMPLE</a></div><p><strong><code>did:vh</code>-specific examples of log entries that fail verification</strong>, in
+addition to the general examples in <a class="term-reference" href="#term:vh-log">VH-Log</a>. Illustrative and
+non-exhaustive.</p>
+<ol>
+<li>
+<p><strong><code>state.id</code> is not the DID.</strong> The first entry has <code>parameters.scid: "Qm111..."</code>, and an entry has <code>state.id: "did:vh:Qm111...?src=https://example.com"</code> or <code>"did:webvh:Qm111...:example.com"</code>.
+Every entry’s <code>state.id</code> must be exactly <code>did:vh:Qm111...</code>.</p>
+</li>
+<li>
+<p><strong><code>portable</code> parameter present.</strong> An entry includes <code>"portable": true</code>.
+<code>portable</code> is not a <code>did:vh</code> <a class="term-reference" href="#term:parameter">parameter</a>.</p>
+</li>
+<li>
+<p><strong><code>did:webvh</code> method value.</strong> The first entry has <code>parameters.method: "did:webvh:1.0"</code>. A <code>did:vh</code> log must use a <code>did:vh</code> <code>method</code> value.</p>
+</li>
+</ol>
+</wa-callout>
+<h3 id="did-method-operations"><span class="spec-up-heading-text">DID Method Operations</span><a class="toc-anchor" href="#did-method-operations">§</a></h3>
+<h4 id="create-register"><span class="spec-up-heading-text">Create (Register)</span><a class="toc-anchor" href="#create-register">§</a></h4>
+<p>Creating a <code>did:vh</code> DID follows the Create algorithm defined in
+<a class="term-reference" href="#term:vh-log">VH-Log</a>, with the following <code>did:vh</code>-specific constraints:</p>
+<ol>
+<li>
+<p><strong>The DID string</strong> (VH-Log Create step 1) is the literal
+<code>did:vh:{SCID}</code>, where <code>{SCID}</code> is the placeholder for the <a class="term-reference" href="#term:scid">SCID</a>
+calculated later.</p>
+</li>
+<li>
+<p><strong>The initial <a class="term-reference" href="#term:state">state</a> object MUST be a <a class="term-reference" href="#term:diddoc">DIDDoc</a></strong> (VH-Log
+Create step 3). Its top-level <code>id</code> <strong>MUST</strong> be <code>did:vh:{SCID}</code>. All other
+absolute references to the DID within the <a class="term-reference" href="#term:diddoc">DIDDoc</a> <strong>MUST</strong> likewise
+use the placeholder form (e.g., <code>did:vh:{SCID}#key-1</code>). The
+<a class="term-reference" href="#term:diddoc">DIDDoc</a> <strong>MAY</strong> contain any other content the
+<a class="term-reference" href="#term:did-controller">DID Controller</a> requires.</p>
+</li>
+<li>
+<p><strong>The <a class="term-reference" href="#term:parameters">parameters</a></strong> (VH-Log Create step 4) <strong>MUST</strong> follow
+<a href="#didvh-did-method-parameters"><code>did:vh</code> DID Method Parameters</a>, including a
+<code>did:vh</code> <code>method</code> value.</p>
+</li>
+<li>
+<p><strong>Witnesses.</strong> If <a class="term-reference" href="#term:witnesses">witnesses</a> are used, the witness proofs <strong>MUST</strong>
+be collected into the witness proofs file before the <a class="term-reference" href="#term:did-log">DID Log</a> is
+distributed.</p>
+</li>
+<li>
+<p><strong>Distribution</strong> (VH-Log Create step 7). Instead of publishing the log at a
+location derived from the DID, the <a class="term-reference" href="#term:did-controller">DID Controller</a> makes the
+<a class="term-reference" href="#term:did-log">DID Log</a> (and witness proofs file) available through the
+<a class="term-reference" href="#term:did-log-sources">DID Log sources</a> (see <a href="#sourcing-the-did-log">Sourcing the DID
+Log</a>) that the parties who will
+resolve the DID will use: giving it to a peer, sending it to
+<a class="term-reference" href="#term:watchers">watchers</a>, publishing it at one or more web locations, or storing
+it where the ecosystem expects to find it. A <a class="term-reference" href="#term:did-controller">DID Controller</a>
+<strong>MUST</strong> make the log available through at least one source that those
+parties can use.</p>
+</li>
+</ol>
+<h4 id="read-resolve"><span class="spec-up-heading-text">Read (Resolve)</span><a class="toc-anchor" href="#read-resolve">§</a></h4>
+<p>A <code>did:vh</code> <a class="term-reference" href="#term:resolver">Resolver</a> implements the <code>resolve</code> function defined in
+[<a class="spec-reference" href="#ref:DID-RESOLUTION">DID-RESOLUTION</a>]:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-text spec-up-code-block"><code class="language-text" id="spec-up-code-copy-target-6">resolve(did, resolutionOptions) →
+   « didResolutionMetadata, didDocument, didDocumentMetadata »
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-6" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<p>The <code>did</code> input is the DID itself, <code>did:vh:&lt;SCID&gt;</code>, which says nothing about
+where the <a class="term-reference" href="#term:did-log">DID Log</a> is. The client of the <a class="term-reference" href="#term:resolver">Resolver</a> therefore
+passes the <a class="term-reference" href="#term:did-log">DID Log</a> — and, if <a class="term-reference" href="#term:witnesses">witnesses</a> are in use, the
+witness proofs — in <code>resolutionOptions</code>, in one of the <a href="#didvh-resolution-options">two
+ways</a> defined below: directly, or by reference, in
+which case the <a class="term-reference" href="#term:resolver">Resolver</a> first retrieves the files. The
+<a class="term-reference" href="#term:resolver">Resolver</a> then verifies the <a class="term-reference" href="#term:did-log">DID Log</a> and returns the requested
+version of the <a class="term-reference" href="#term:diddoc">DIDDoc</a>.</p>
+<p>The <a class="term-reference" href="#term:resolver">Resolver</a> does not discover the <a class="term-reference" href="#term:did-log">DID Log</a>. How a client
+sources the <a class="term-reference" href="#term:did-log">DID Log</a> — gets the log itself, or a reference to it —
+before calling <code>resolve</code> is described in the non-normative <a href="#sourcing-the-did-log">Sourcing the DID
+Log</a> section. Once it has the <a class="term-reference" href="#term:did-log">DID Log</a> the
+client passed, the <a class="term-reference" href="#term:resolver">Resolver</a> retrieves further copies only when the
+client asks it to, with the <code>checkWatchers</code> and <code>extraWatchers</code> options, to
+check that the client’s copy is current and has not been forked.</p>
+<h5 id="didvh-resolution-options"><span class="spec-up-heading-text"><code>did:vh</code> Resolution Options</span><a class="toc-anchor" href="#didvh-resolution-options">§</a></h5>
+<p>A <code>did:vh</code> <a class="term-reference" href="#term:resolver">Resolver</a> <strong>MUST</strong> recognise the following options, which
+pass the <a class="term-reference" href="#term:did-log">DID Log</a> to it. They are <code>did:vh</code>-specific, and are to be
+registered in [<a class="spec-reference" href="#ref:DID-EXTENSION-RESOLUTION">DID-EXTENSION-RESOLUTION</a>].</p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>didLog</code></td>
+<td>String</td>
+<td>The complete <a class="term-reference" href="#term:did-log">DID Log</a>, in <a class="term-reference" href="#term:json-lines">JSON Lines</a> format.</td>
+</tr>
+<tr>
+<td><code>didWitness</code></td>
+<td>JSON array</td>
+<td>The witness proofs file content, as defined in VH-Log’s <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#the-witness-proofs-file" href="https://swcurran.github.io/VH-Log/next/index.html#the-witness-proofs-file">Witness Proofs File</a> section.</td>
+</tr>
+<tr>
+<td><code>src</code></td>
+<td>String</td>
+<td>A reference to the location where <code>did.jsonl</code> (and <code>did-witness.json</code>) are stored. See <a href="#the-src-option">The <code>src</code> Option</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>A <code>did:vh</code> <a class="term-reference" href="#term:resolver">Resolver</a> also supports the options defined in VH-Log’s
+<a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#resolution-options" href="https://swcurran.github.io/VH-Log/next/index.html#resolution-options">Resolution
+Options</a>
+section, passed in <code>resolutionOptions</code>. <code>versionId</code> and <code>versionTime</code> are
+defined in [<a class="spec-reference" href="#ref:DID-RESOLUTION">DID-RESOLUTION</a>]; <code>versionNumber</code>, <code>checkWatchers</code>,
+<code>extraWatchers</code> and <code>minCopies</code> are <code>did:vh</code>-specific, and are to be
+registered in [<a class="spec-reference" href="#ref:DID-EXTENSION-RESOLUTION">DID-EXTENSION-RESOLUTION</a>]. The <a class="term-reference" href="#term:did-log">DID Log</a> passed
+directly or by reference is the copy from the location defined by the
+<a class="term-reference" href="#term:specialisation">specialisation</a> (VH-Log Resolution Options step 1), and counts
+towards <code>minCopies</code>.</p>
+<p>The options support two ways of giving the <a class="term-reference" href="#term:resolver">Resolver</a> the
+<a class="term-reference" href="#term:did-log">DID Log</a>:</p>
+<ul>
+<li><strong>Passing the log directly.</strong> The client passes the content of the
+<a class="term-reference" href="#term:did-log">DID Log</a> in <code>didLog</code>, and of the witness proofs file (if any) in
+<code>didWitness</code>.</li>
+<li><strong>Passing the log by reference.</strong> The client passes, in <code>src</code>, a reference
+to the location from which the <a class="term-reference" href="#term:resolver">Resolver</a> retrieves <code>did.jsonl</code> and
+<code>did-witness.json</code>, as defined in <a href="#the-src-option">The <code>src</code> Option</a>. In
+this version of <code>did:vh</code>, a reference is a web location, a location using
+another URL scheme the <a class="term-reference" href="#term:resolver">Resolver</a> supports, or, for a
+<a class="term-reference" href="#term:resolver">Resolver</a> local to its client, a local directory or loopback web
+location.</li>
+</ul>
+<p>In addition to VH-Log’s requirements for its options:</p>
+<ul>
+<li>Exactly one of <code>didLog</code> and <code>src</code> <strong>MUST</strong> be given.</li>
+<li><code>didWitness</code> <strong>MAY</strong> be given only with <code>didLog</code>.</li>
+<li>A malformed option, a value that does not conform to the rules for <code>src</code>,
+or more than one of <code>versionId</code>, <code>versionTime</code> and <code>versionNumber</code>, <strong>MUST</strong>
+cause the <code>invalidOptions</code> error.</li>
+<li>A <a class="term-reference" href="#term:resolver">Resolver</a> <strong>MUST</strong> support logs passed directly. It <strong>MAY</strong> decline to
+retrieve from a <code>src</code> reference, based on its policy (for example, a
+<a class="term-reference" href="#term:resolver">Resolver</a> that never retrieves from locations chosen by its
+callers), and then <strong>MUST</strong> return the <code>featureNotSupported</code> error, except
+as defined in <a href="#web-locations">Web Locations</a> and <a href="#local-directories">Local
+Directories</a>.</li>
+<li>A VH-Log option the <a class="term-reference" href="#term:resolver">Resolver</a> does not support <strong>MUST</strong> cause the
+<code>featureNotSupported</code> error. A <a class="term-reference" href="#term:resolver">Resolver</a> <strong>SHOULD</strong> support
+<code>checkWatchers</code>, <code>extraWatchers</code> and <code>minCopies</code>.</li>
+<li>Each <code>extraWatchers</code> value <strong>MUST</strong> be an <code>https</code> URL.</li>
+</ul>
+<wa-callout id="example-3" class="spec-up-notice spec-up-notice--example" variant="neutral" appearance="filled-outlined"><div class="spec-up-notice-heading"><a class="notice-link" href="#example-3">EXAMPLE</a></div><p>Passing the log directly, resolving version 2:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-7"><span class="token punctuation">{</span>
+  <span class="token property">"did"</span><span class="token operator">:</span> <span class="token string">"did:vh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ"</span><span class="token punctuation">,</span>
+  <span class="token property">"resolutionOptions"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"didLog"</span><span class="token operator">:</span> <span class="token string">"{\"versionId\":\"1-Qm...\",...}\n{\"versionId\":\"2-Qm...\",...}\n"</span><span class="token punctuation">,</span>
+    <span class="token property">"didWitness"</span><span class="token operator">:</span> <span class="token punctuation">[</span> <span class="token punctuation">{</span> <span class="token property">"versionId"</span><span class="token operator">:</span> <span class="token string">"2-Qm..."</span><span class="token punctuation">,</span> <span class="token property">"proof"</span><span class="token operator">:</span> <span class="token punctuation">[</span> ... <span class="token punctuation">]</span> <span class="token punctuation">}</span> <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"versionNumber"</span><span class="token operator">:</span> <span class="token number">2</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-7" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<p>Passing the log by reference to a web location:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-8"><span class="token punctuation">{</span>
+  <span class="token property">"did"</span><span class="token operator">:</span> <span class="token string">"did:vh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ"</span><span class="token punctuation">,</span>
+  <span class="token property">"resolutionOptions"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"src"</span><span class="token operator">:</span> <span class="token string">"https://example.com/dids/issuer"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-8" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<p>Passing the log by reference to a local directory, using a local
+<a class="term-reference" href="#term:resolver">Resolver</a>:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-9"><span class="token punctuation">{</span>
+  <span class="token property">"did"</span><span class="token operator">:</span> <span class="token string">"did:vh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ"</span><span class="token punctuation">,</span>
+  <span class="token property">"resolutionOptions"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"src"</span><span class="token operator">:</span> <span class="token string">"file:///var/lib/wallet/dids/QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-9" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+</wa-callout>
+<h6 id="the-src-option"><span class="spec-up-heading-text">The <code>src</code> Option</span><a class="toc-anchor" href="#the-src-option">§</a></h6>
+<p>The <code>src</code> (“source”) option is a reference to the location where
+<code>did.jsonl</code> and, if <a class="term-reference" href="#term:witnesses">witnesses</a> are active, <code>did-witness.json</code> are
+stored. A <code>src</code> value <strong>MUST</strong> be an absolute URL [<a class="spec-reference" href="#ref:RFC3986">RFC3986</a>], and its
+scheme determines the kind of reference:</p>
+<ul>
+<li><code>https</code>, or <code>http</code> with a loopback host: a <a href="#web-locations">web
+location</a>, such as <code>https://example.com/dids/issuer</code> or
+<code>http://localhost:8000/dids/issuer</code>.</li>
+<li><code>file</code>: a <a href="#local-directories">local directory</a> [<a class="spec-reference" href="#ref:RFC8089">RFC8089</a>], such as
+<code>file:///var/lib/wallet/dids/QmfGEU...</code>.</li>
+<li>Any other scheme: an <a href="#other-schemes">other scheme</a> reference, such as
+<code>ipns://k51qzi5uqu5d.../dids/issuer</code>.</li>
+</ul>
+<p>A value that is not an absolute URL, or that is not valid for its kind,
+<strong>MUST</strong> cause the <code>invalidOptions</code> error.</p>
+<p>Whatever the kind of reference, the <a class="term-reference" href="#term:resolver">Resolver</a> <strong>MUST</strong> retrieve the
+files the same way: <code>did.jsonl</code> from the location, and, if the active
+<a class="term-reference" href="#term:parameters">parameters</a> require <a class="term-reference" href="#term:witnesses">witnesses</a>, <code>did-witness.json</code> from the
+same location (for a web location, as defined in <a href="#web-locations">Web
+Locations</a>). If <code>did.jsonl</code> is not found, the <a class="term-reference" href="#term:resolver">Resolver</a> <strong>MUST</strong>
+return the <code>notFound</code> error.</p>
+<p>Because a location can hold only one <code>did.jsonl</code>, a <a class="term-reference" href="#term:did-controller">DID Controller</a>
+or client storing several <code>did:vh</code> <a class="term-reference" href="#term:did-logs">DID Logs</a> in one place <strong>SHOULD</strong>
+give each its own location (a URL path or a directory). Using the
+<a class="term-reference" href="#term:scid">SCID</a> as the last path segment is a simple way to do so.</p>
+<p>A <code>src</code> reference is not authoritative: a <a class="term-reference" href="#term:did-controller">DID Controller</a> <strong>MAY</strong> stop
+publishing at a web location at any time, and the <a class="term-reference" href="#term:did-log">DID Log</a> found
+through any <code>src</code> reference may not be the latest. Because <code>src</code> is not part
+of the DID, the DID does not change when the log is stored elsewhere.</p>
+<p>A <code>src</code> reference also says nothing about who controls the DID: a
+<a class="term-reference" href="#term:did-controller">DID Controller</a> can publish a log at any location it can write to,
+and anyone can put any <code>src</code> value in a DID URL. <a class="term-reference" href="#term:resolvers">Resolvers</a> and their
+clients <strong>MUST NOT</strong> treat a <code>src</code> reference as evidence of an association
+between the DID and the owner of the location.</p>
+<wa-callout id="note-1" class="spec-up-notice spec-up-notice--note" variant="brand" appearance="filled-outlined"><wa-icon library="spec-up" slot="icon" name="circle-info" label="note"></wa-icon><div class="spec-up-notice-heading"><a class="notice-link" href="#note-1">NOTE</a></div><p>The <code>did:scid</code> <code>src</code> parameter can also name a DID method that stores the
+verification data (for example, a DID-Linked Resource on a ledger). This
+version of <code>did:vh</code> supports only URL references. Other kinds of reference,
+such as DID values or references to other ways of storing a
+<a class="term-reference" href="#term:did-log">DID Log</a>, may be added in a later version.</p>
+</wa-callout>
+<h6 id="web-locations"><span class="spec-up-heading-text">Web Locations</span><a class="toc-anchor" href="#web-locations">§</a></h6>
+<p>A web location reference is the base URL under which the files are
+published on a web server, such as <code>https://example.com/dids/issuer</code>.</p>
+<p>The following requirements apply to a web location reference:</p>
+<ul>
+<li>The value <strong>MUST</strong> be an absolute URL with the <code>https</code> or <code>http</code> scheme, and
+<strong>MUST NOT</strong> include a query or fragment component.</li>
+<li>The value <strong>MAY</strong> include a port, such as <code>https://example.com:3000/dids</code>.</li>
+<li>For <code>https</code>, the host <strong>MUST</strong> be a domain name, not an IP address. A
+host containing non-ASCII characters (an internationalised domain name)
+<strong>MUST</strong> be converted to its ASCII form (A-labels) as defined in IDNA2008
+[<a class="spec-reference" href="#ref:RFC5891">RFC5891</a>] before retrieval; a host that cannot be converted <strong>MUST</strong>
+cause the <code>invalidOptions</code> error.</li>
+<li>For <code>http</code>, the host <strong>MUST</strong> be a loopback host: <code>localhost</code>, an IPv4
+address in <code>127.0.0.0/8</code>, or <code>[::1]</code>. An <code>http</code> reference with any other
+host <strong>MUST</strong> cause the <code>invalidOptions</code> error. An <code>http</code> reference is a
+<em>loopback reference</em>, intended for development and testing.</li>
+<li>After any trailing <code>/</code> is removed, each path segment, once
+percent-decoded, <strong>MUST</strong> be non-empty, <strong>MUST NOT</strong> be <code>.</code> or <code>..</code>,
+<strong>MUST NOT</strong> contain <code>/</code>, <code>\</code> or NUL, and <strong>MUST NOT</strong> begin or end with
+whitespace. The checks apply to the decoded form because percent-encoded
+variants such as <code>%2E%2E</code>, <code>%2F</code>, <code>%5C</code> and <code>%00</code> would otherwise pass
+unnoticed. A segment that fails a check <strong>MUST</strong> cause the
+<code>invalidOptions</code> error.</li>
+<li>A loopback reference is subject to the same restrictions as a <a href="#local-directories">local
+directory</a> reference: a <a class="term-reference" href="#term:resolver">Resolver</a> that accepts
+requests from other systems <strong>MUST NOT</strong> retrieve from it and <strong>MUST</strong>
+return the <code>invalidOptions</code> error, and it <strong>MUST NOT</strong> be taken from a DID
+URL. A loopback reference would otherwise let a caller make a
+<a class="term-reference" href="#term:resolver">Resolver</a> send requests to services on its own host.</li>
+</ul>
+<p>To retrieve the <a class="term-reference" href="#term:did-log">DID Log</a> from a web location, the <a class="term-reference" href="#term:resolver">Resolver</a>
+<strong>MUST</strong>:</p>
+<ol>
+<li>Take the <code>src</code> value, removing any trailing <code>/</code>.</li>
+<li>If the URL has no path, append <code>/.well-known/did.jsonl</code>. Otherwise, append
+<code>/did.jsonl</code>.</li>
+<li>Retrieve the <a class="term-reference" href="#term:did-log">DID Log</a> with an HTTP <code>GET</code> (HTTPS for an <code>https</code>
+reference), following the transport requirements below.</li>
+<li>If the active <a class="term-reference" href="#term:parameters">parameters</a> require <a class="term-reference" href="#term:witnesses">witnesses</a>, retrieve the
+witness proofs file from the same URL with the final <code>did.jsonl</code> replaced by
+<code>did-witness.json</code>.</li>
+</ol>
+<p>When retrieving from a web location, a <a class="term-reference" href="#term:resolver">Resolver</a> <strong>MUST</strong> meet the
+requirements of VH-Log’s <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#retrieving-log-resources" href="https://swcurran.github.io/VH-Log/next/index.html#retrieving-log-resources">Retrieving Log
+Resources</a> section, which
+include HTTPS with server authentication, no automatic redirects, and
+rejection of IP literals and private addresses. The only exception is a
+loopback reference, for which the requirements to use HTTPS and to reject
+loopback hosts do not apply.</p>
+<p>This is the same layout as <code>did:webvh</code>, so a web location reference names the
+same location as the domain and path of a <code>did:webvh</code> DID:</p>
+<wa-callout id="example-4" class="spec-up-notice spec-up-notice--example" variant="neutral" appearance="filled-outlined"><div class="spec-up-notice-heading"><a class="notice-link" href="#example-4">EXAMPLE</a></div><p>Web location <code>src</code> values and the corresponding <a class="term-reference" href="#term:did-log">DID Log</a> URLs:</p>
+<p><code>https://example.com</code> --&gt; <code>https://example.com/.well-known/did.jsonl</code></p>
+<p><code>https://example.com/dids/issuer</code> --&gt; <code>https://example.com/dids/issuer/did.jsonl</code></p>
+<p><code>https://example.com:3000/dids/issuer</code> --&gt; <code>https://example.com:3000/dids/issuer/did.jsonl</code></p>
+<p><code>https://example.com/users/{SCID}</code> --&gt; <code>https://example.com/users/{SCID}/did.jsonl</code></p>
+<p><code>http://localhost:8000/dids/issuer</code> --&gt; <code>http://localhost:8000/dids/issuer/did.jsonl</code></p>
+</wa-callout>
+<h6 id="local-directories"><span class="spec-up-heading-text">Local Directories</span><a class="toc-anchor" href="#local-directories">§</a></h6>
+<p>A local directory reference identifies a directory on the system where the
+<a class="term-reference" href="#term:resolver">Resolver</a> runs. It is for a <a class="term-reference" href="#term:resolver">Resolver</a> used by a client on the
+same system — for example, a <a class="term-reference" href="#term:resolver">Resolver</a> used as a library or
+command-line tool — such as a wallet that keeps the <a class="term-reference" href="#term:did-logs">DID Logs</a> it holds
+in local storage.</p>
+<ul>
+<li>A local directory reference <strong>MUST</strong> be a <code>file:</code> URL [<a class="spec-reference" href="#ref:RFC8089">RFC8089</a>] with
+an absolute path, an empty host or the host <code>localhost</code>, and no query or
+fragment component.</li>
+<li>To retrieve the files, the <a class="term-reference" href="#term:resolver">Resolver</a> <strong>MUST</strong> remove any trailing
+<code>/</code> from the path, and append <code>/did.jsonl</code> for the <a class="term-reference" href="#term:did-log">DID Log</a> and
+<code>/did-witness.json</code> for the witness proofs file. A file that does not exist
+or cannot be read is treated as not found.</li>
+<li>A <a class="term-reference" href="#term:resolver">Resolver</a> <strong>MUST</strong> treat the content of the files exactly as if it
+had been passed directly.</li>
+<li>A <a class="term-reference" href="#term:resolver">Resolver</a> that accepts requests from other systems — for example,
+over HTTP — <strong>MUST NOT</strong> read local files, and <strong>MUST</strong> return the
+<code>invalidOptions</code> error for a local directory reference.</li>
+<li>A local directory reference <strong>MUST NOT</strong> be taken from a DID URL, as
+defined in <a href="#reading-didvh-did-urls">Reading <code>did:vh</code> DID URLs</a>. A DID URL
+can come from an untrusted party; allowing it to name local directories
+would let such a party make a <a class="term-reference" href="#term:resolver">Resolver</a> read files on its host.</li>
+</ul>
+<wa-callout id="example-5" class="spec-up-notice spec-up-notice--example" variant="neutral" appearance="filled-outlined"><div class="spec-up-notice-heading"><a class="notice-link" href="#example-5">EXAMPLE</a></div><p>Local directory <code>src</code> values and the corresponding <a class="term-reference" href="#term:did-log">DID Log</a> files:</p>
+<p><code>file:///var/lib/wallet/dids/QmfGEU...</code> --&gt; <code>/var/lib/wallet/dids/QmfGEU.../did.jsonl</code></p>
+<p><code>file://localhost/home/alice/dids/QmfGEU.../</code> --&gt; <code>/home/alice/dids/QmfGEU.../did.jsonl</code></p>
+</wa-callout>
+<h6 id="other-schemes"><span class="spec-up-heading-text">Other Schemes</span><a class="toc-anchor" href="#other-schemes">§</a></h6>
+<p>A <a class="term-reference" href="#term:resolver">Resolver</a> <strong>MAY</strong> support <code>src</code> references using other URL schemes,
+provided the scheme has hierarchical paths through which a base URL names a
+location holding <code>did.jsonl</code> and <code>did-witness.json</code> — for example, <code>ipns</code>
+and <code>ipfs</code> URLs naming an IPFS directory. For such a reference:</p>
+<ul>
+<li>The value <strong>MUST NOT</strong> include a query or fragment component.</li>
+<li>The <a class="term-reference" href="#term:resolver">Resolver</a> <strong>MUST</strong> remove any trailing <code>/</code>, and append
+<code>/did.jsonl</code> for the <a class="term-reference" href="#term:did-log">DID Log</a> and <code>/did-witness.json</code> for the
+witness proofs file. The <code>/.well-known/</code> form used by web locations does
+not apply.</li>
+<li>A <a class="term-reference" href="#term:resolver">Resolver</a> that does not support the scheme <strong>MUST</strong> return the
+<code>featureNotSupported</code> error.</li>
+<li>A <a class="term-reference" href="#term:resolver">Resolver</a> <strong>MUST</strong> apply to the retrieval protections equivalent
+to those required for <a href="#web-locations">web locations</a>, including to any
+gateway it uses to reach the scheme’s network.</li>
+</ul>
+<wa-callout id="example-6" class="spec-up-notice spec-up-notice--example" variant="neutral" appearance="filled-outlined"><div class="spec-up-notice-heading"><a class="notice-link" href="#example-6">EXAMPLE</a></div><p>Other scheme <code>src</code> values and the corresponding <a class="term-reference" href="#term:did-log">DID Log</a> locations:</p>
+<p><code>ipns://k51qzi5uqu5d.../dids/issuer</code> --&gt; <code>ipns://k51qzi5uqu5d.../dids/issuer/did.jsonl</code></p>
+<p><code>ipfs://bafybei.../</code> --&gt; <code>ipfs://bafybei.../did.jsonl</code></p>
+</wa-callout>
+<wa-callout id="note-2" class="spec-up-notice spec-up-notice--note" variant="brand" appearance="filled-outlined"><wa-icon library="spec-up" slot="icon" name="circle-info" label="note"></wa-icon><div class="spec-up-notice-heading"><a class="notice-link" href="#note-2">NOTE</a></div><p>Some schemes name immutable content. An <code>ipfs</code> URL names a directory by the
+hash of its content, so any change to <code>did.jsonl</code> or <code>did-witness.json</code> —
+including witness proofs added after an entry — gives the directory a new
+identifier. An <code>ipfs</code> reference is therefore a snapshot of the
+<a class="term-reference" href="#term:did-log">DID Log</a>, useful for archiving but never updated; an <code>ipns</code> name,
+which the <a class="term-reference" href="#term:did-controller">DID Controller</a> repoints to each new directory, can serve
+the latest log. See <a href="#log-freshness-and-duplicity">Log Freshness and
+Duplicity</a>.</p>
+</wa-callout>
+<h5 id="resolution-algorithm"><span class="spec-up-heading-text">Resolution Algorithm</span><a class="toc-anchor" href="#resolution-algorithm">§</a></h5>
+<p>A <code>did:vh</code> <a class="term-reference" href="#term:resolver">Resolver</a> <strong>MUST</strong> apply VH-Log’s <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#read-resolve" href="https://swcurran.github.io/VH-Log/next/index.html#read-resolve">Read
+(Resolve)</a>
+algorithm, including its <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#comparing-copies-of-a-log" href="https://swcurran.github.io/VH-Log/next/index.html#comparing-copies-of-a-log">Comparing Copies of a
+Log</a>
+and <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#selecting-a-version" href="https://swcurran.github.io/VH-Log/next/index.html#selecting-a-version">Selecting a
+Version</a>
+sections, with the following <code>did:vh</code>-specific rules:</p>
+<ol>
+<li>
+<p><strong>The DID.</strong> The <code>did</code> input <strong>MUST</strong> conform to the ABNF in
+<a href="#method-specific-identifier">Method-Specific Identifier</a>; if it does not,
+return the <code>invalidDid</code> error.</p>
+</li>
+<li>
+<p><strong>The options.</strong> Validate the <code>resolutionOptions</code> as defined in <a href="#didvh-resolution-options"><code>did:vh</code>
+Resolution Options</a>. If they are invalid,
+return the <code>invalidOptions</code> error.</p>
+</li>
+<li>
+<p><strong>Getting the log</strong> (VH-Log Read step 1). Get the <a class="term-reference" href="#term:did-log">DID Log</a>
+according to how it was passed:</p>
+<ul>
+<li><strong>Directly:</strong> the <code>didLog</code> value.</li>
+<li><strong>By reference:</strong> retrieve it as defined in <a href="#the-src-option">The <code>src</code>
+Option</a>. If the <a class="term-reference" href="#term:did-log">DID Log</a> is not found, return
+the <code>notFound</code> error.</li>
+</ul>
+<p>The witness proofs file is needed only if the active <a class="term-reference" href="#term:parameters">parameters</a>
+require <a class="term-reference" href="#term:witnesses">witnesses</a>. When it is, use the <code>didWitness</code> value if the
+log was passed directly, or retrieve the file from the same <code>src</code>
+reference as defined in <a href="#the-src-option">The <code>src</code> Option</a>.</p>
+</li>
+<li>
+<p><strong>Parameters</strong> (VH-Log Read step 1). <code>parameters</code> <strong>MUST</strong> adhere to
+<a href="#didvh-did-method-parameters"><code>did:vh</code> DID Method Parameters</a>.</p>
+</li>
+<li>
+<p><strong>Witnesses</strong> (VH-Log Read step 2.1). Witness proofs <strong>MUST</strong> be verified
+as defined in <a href="#witnesses">Witnesses</a>.</p>
+</li>
+<li>
+<p><strong>State</strong> (VH-Log Read step 6). For every entry, <code>state.id</code> <strong>MUST</strong> be
+exactly <code>did:vh:</code> followed by the <code>scid</code> <a class="term-reference" href="#term:parameter">parameter</a> of the first
+entry, and that <a class="term-reference" href="#term:scid">SCID</a> <strong>MUST</strong> equal the <a class="term-reference" href="#term:scid">SCID</a> of the <code>did</code>
+input. This check applies to every entry verified, including those of
+further copies retrieved with <code>checkWatchers</code> or <code>extraWatchers</code>.</p>
+</li>
+<li>
+<p><strong>Result.</strong> Return the <a class="term-reference" href="#term:diddoc">DIDDoc</a> (unless the DID is deactivated, as
+defined in <a href="#deactivate-revoke">Deactivate (Revoke)</a>) with the metadata
+defined in <a href="#did-resolution-metadata">DID Resolution Metadata</a>. A failure
+that VH-Log defines returns the corresponding <code>error</code> listed there.</p>
+</li>
+</ol>
+<h5 id="did-resolution-metadata"><span class="spec-up-heading-text">DID Resolution Metadata</span><a class="toc-anchor" href="#did-resolution-metadata">§</a></h5>
+<p>As defined in [<a class="spec-reference" href="#ref:DID-RESOLUTION">DID-RESOLUTION</a>], a <code>did:vh</code> <a class="term-reference" href="#term:resolver">Resolver</a>
+<strong>SHOULD</strong> return the following DID Document Metadata:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-10"><span class="token punctuation">{</span>
+  <span class="token property">"versionId"</span><span class="token operator">:</span> <span class="token string">"1-QmRRaLXwc6BjBuBPosSupJwEQ8w9f3znP7yfbpGfwcnLr6"</span><span class="token punctuation">,</span>
+  <span class="token property">"versionTime"</span><span class="token operator">:</span> <span class="token string">"2025-01-23T04:12:36Z"</span><span class="token punctuation">,</span>
+  <span class="token property">"created"</span><span class="token operator">:</span> <span class="token string">"2025-01-23T04:12:36Z"</span><span class="token punctuation">,</span>
+  <span class="token property">"updated"</span><span class="token operator">:</span> <span class="token string">"2025-01-23T04:12:36Z"</span><span class="token punctuation">,</span>
+  <span class="token property">"scid"</span><span class="token operator">:</span> <span class="token string">"QmPEQVM1JPTyrvEgBcDXwjK4TeyLGSX1PxjgyeAisdWM1p"</span><span class="token punctuation">,</span>
+  <span class="token property">"deactivated"</span><span class="token operator">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+  <span class="token property">"ttl"</span><span class="token operator">:</span> <span class="token string">"3600"</span><span class="token punctuation">,</span>
+  <span class="token property">"witness"</span><span class="token operator">:</span> <span class="token punctuation">{</span> ... <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"watchers"</span><span class="token operator">:</span> <span class="token punctuation">[</span> ... <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-10" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<p>The items are taken from the VH-Log <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#resolution-result" href="https://swcurran.github.io/VH-Log/next/index.html#resolution-result">Resolution
+Result</a>, as follows:</p>
+<ul>
+<li><code>versionId</code> — The <code>versionId</code> of the <a class="term-reference" href="#term:did-log-entry">DID log entry</a> of the resolved
+<a class="term-reference" href="#term:diddoc">DIDDoc</a> version.</li>
+<li><code>versionTime</code> — The <code>versionTime</code> of the <a class="term-reference" href="#term:did-log-entry">DID log entry</a> of the
+resolved <a class="term-reference" href="#term:diddoc">DIDDoc</a> version, as an <a class="term-reference" href="#term:iso8601">ISO8601</a> timestamp.</li>
+<li><code>created</code> — The <code>versionTime</code> of the first <a class="term-reference" href="#term:did-log-entry">DID log entry</a>, as an
+<a class="term-reference" href="#term:iso8601">ISO8601</a> timestamp: when, according to the
+<a class="term-reference" href="#term:did-controller">DID Controller</a>, the DID was created.</li>
+<li><code>updated</code> — The <code>versionTime</code> of the last valid <a class="term-reference" href="#term:did-log-entry">DID log entry</a>, as
+an <a class="term-reference" href="#term:iso8601">ISO8601</a> timestamp.</li>
+<li><code>scid</code> — The <a class="term-reference" href="#term:scid">SCID</a> of the DID.</li>
+<li><code>deactivated</code> — A boolean that is <code>true</code> if the DID has been deactivated,
+as defined in <a href="#deactivate-revoke">Deactivate (Revoke)</a>.</li>
+<li><code>ttl</code> — A string containing the unsigned integer value, in seconds, of the
+active <code>ttl</code> <a class="term-reference" href="#term:parameter">parameter</a>: guidance from the <a class="term-reference" href="#term:did-controller">DID Controller</a>
+on how long to cache the resolution result.</li>
+<li><code>witness</code> — The active <code>witness</code> <a class="term-reference" href="#term:parameter">parameter</a> object, as defined in
+VH-Log’s <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#the-witness-parameter" href="https://swcurran.github.io/VH-Log/next/index.html#the-witness-parameter">The <code>witness</code> Parameter</a> section, if
+<a class="term-reference" href="#term:witnesses">witnesses</a> are active. Its <code>threshold</code> value is a string containing
+the integer value.</li>
+<li><code>watchers</code> — The active list of <a class="term-reference" href="#term:watcher">watcher</a> URLs from the <code>watchers</code>
+<a class="term-reference" href="#term:parameter">parameter</a>.</li>
+</ul>
+<p>“Active” means as set by the last valid <a class="term-reference" href="#term:did-log-entry">DID log entry</a>. That is the
+last entry in the <a class="term-reference" href="#term:did-log">DID Log</a> unless later entries fail verification, in
+which case it is the last entry before the first failure.</p>
+<p><code>ttl</code> and the <code>witness</code> <code>threshold</code> are strings, not integers, because
+[<a class="spec-reference" href="#ref:DID-RESOLUTION">DID-RESOLUTION</a>] does not permit integers in DID metadata; a client
+converts them to integers before use. <code>updated</code>, and the values marked
+active, reflect the <a class="term-reference" href="#term:did-log">DID Log</a> passed to the <a class="term-reference" href="#term:resolver">Resolver</a>, which
+may not be the latest (see <a href="#log-freshness-and-duplicity">Log Freshness and
+Duplicity</a>).</p>
+<p>The <code>copies</code> and <code>warnings</code> items of the VH-Log <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#resolution-result" href="https://swcurran.github.io/VH-Log/next/index.html#resolution-result">Resolution
+Result</a> describe the resolution
+rather than the DID, so they are returned in the <code>didResolutionMetadata</code>, not
+the DID Document Metadata. A <a class="term-reference" href="#term:resolver">Resolver</a> given <code>checkWatchers</code>,
+<code>extraWatchers</code> or <code>minCopies</code> <strong>MUST</strong> include <code>copies</code>, and <strong>SHOULD</strong>
+include <code>warnings</code> when there are any, with the structure and values defined
+in VH-Log:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-11"><span class="token punctuation">{</span>
+  <span class="token property">"contentType"</span><span class="token operator">:</span> <span class="token string">"application/did+json"</span><span class="token punctuation">,</span>
+  <span class="token property">"copies"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"source"</span><span class="token operator">:</span> <span class="token string">"https://example.com/dids/issuer"</span><span class="token punctuation">,</span>
+      <span class="token property">"versionId"</span><span class="token operator">:</span> <span class="token string">"3-QmRRaLXwc6BjBuBPosSupJwEQ8w9f3znP7yfbpGfwcnLr6"</span><span class="token punctuation">,</span>
+      <span class="token property">"status"</span><span class="token operator">:</span> <span class="token string">"current"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"source"</span><span class="token operator">:</span> <span class="token string">"https://watcher.example.org"</span><span class="token punctuation">,</span>
+      <span class="token property">"versionId"</span><span class="token operator">:</span> <span class="token string">"2-QmPEQVM1JPTyrvEgBcDXwjK4TeyLGSX1PxjgyeAisdWM1p"</span><span class="token punctuation">,</span>
+      <span class="token property">"status"</span><span class="token operator">:</span> <span class="token string">"behind"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"source"</span><span class="token operator">:</span> <span class="token string">"https://watcher.example.net"</span><span class="token punctuation">,</span>
+      <span class="token property">"status"</span><span class="token operator">:</span> <span class="token string">"unavailable"</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"warnings"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"code"</span><span class="token operator">:</span> <span class="token string">"copy-behind"</span><span class="token punctuation">,</span>
+      <span class="token property">"source"</span><span class="token operator">:</span> <span class="token string">"https://watcher.example.org"</span><span class="token punctuation">,</span>
+      <span class="token property">"message"</span><span class="token operator">:</span> <span class="token string">"Copy is 1 entry behind the reference copy."</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"code"</span><span class="token operator">:</span> <span class="token string">"copy-unavailable"</span><span class="token punctuation">,</span>
+      <span class="token property">"source"</span><span class="token operator">:</span> <span class="token string">"https://watcher.example.net"</span><span class="token punctuation">,</span>
+      <span class="token property">"message"</span><span class="token operator">:</span> <span class="token string">"Watcher did not respond."</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-11" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<p>When a DID resolution error occurs, the <code>error</code> field <strong>MUST</strong> be included in
+the <code>didResolutionMetadata</code>, as defined in [<a class="spec-reference" href="#ref:DID-RESOLUTION">DID-RESOLUTION</a>], and
+<a class="term-reference" href="#term:resolvers">Resolvers</a> <strong>SHOULD</strong> include <code>problemDetails</code> following
+[<a class="spec-reference" href="#ref:RFC9457">RFC9457</a>]. The following <code>error</code> values <strong>MUST</strong> be used. The first
+four are from [<a class="spec-reference" href="#ref:DID-EXTENSION-RESOLUTION">DID-EXTENSION-RESOLUTION</a>]; <code>logForked</code> and
+<code>insufficientCopies</code> are <code>did:vh</code>-specific, and are to be registered there.</p>
+<ul>
+<li><code>invalidDid</code> — The DID is malformed, or the <a class="term-reference" href="#term:did-log">DID Log</a> passed to the <a class="term-reference" href="#term:resolver">Resolver</a> (or
+the requested version) fails verification.</li>
+<li><code>invalidOptions</code> — A resolution option is malformed or not permitted,
+including a local directory or loopback reference passed to a
+<a class="term-reference" href="#term:resolver">Resolver</a> that accepts requests from other systems.</li>
+<li><code>notFound</code> — The <a class="term-reference" href="#term:did-log">DID Log</a> was not found through the <code>src</code>
+reference, the requested version does not exist, or the resource referenced
+by a DID URL was not found.</li>
+<li><code>featureNotSupported</code> — The <a class="term-reference" href="#term:resolver">Resolver</a> declined to retrieve from a
+<code>src</code> reference, does not support the scheme of a <code>src</code> reference, or does
+not support <code>versionNumber</code>, <code>checkWatchers</code>, <code>extraWatchers</code> or
+<code>minCopies</code>.</li>
+<li><code>logForked</code> — Two copies of the <a class="term-reference" href="#term:did-log">DID Log</a> both pass verification but
+diverge, as defined in VH-Log’s <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#comparing-copies-of-a-log" href="https://swcurran.github.io/VH-Log/next/index.html#comparing-copies-of-a-log">Comparing Copies of a
+Log</a> section. The
+<code>problemDetails</code> <strong>MUST</strong> include the fork report that section requires.</li>
+<li><code>insufficientCopies</code> — Fewer than <code>minCopies</code> copies of the
+<a class="term-reference" href="#term:did-log">DID Log</a> were retrieved and matched.</li>
+</ul>
+<h5 id="reading-didvh-did-urls"><span class="spec-up-heading-text">Reading <code>did:vh</code> DID URLs</span><a class="toc-anchor" href="#reading-didvh-did-urls">§</a></h5>
+<p>The <code>src</code>, <code>versionId</code>, <code>versionTime</code> and <code>versionNumber</code> options can also be
+given as DID URL query parameters, such as
+<code>did:vh:&lt;SCID&gt;?src=https://example.com/dids/issuer&amp;versionNumber=2</code>. <code>didLog</code> and
+<code>didWitness</code> are resolution options only, and <strong>MUST NOT</strong> be used as DID URL
+query parameters.</p>
+<p>When a <code>did:vh</code> DID URL is dereferenced, the DID URL dereferencer (the client
+of the <a class="term-reference" href="#term:resolver">Resolver</a>) decides which of these parameters to pass to
+<code>resolve</code> as resolution options:</p>
+<ul>
+<li>It <strong>SHOULD</strong> pass a <code>versionId</code>, <code>versionTime</code> or <code>versionNumber</code> DID URL
+parameter as the resolution option of the same name. These select a version
+as defined in VH-Log’s <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#selecting-a-version" href="https://swcurran.github.io/VH-Log/next/index.html#selecting-a-version">Selecting a
+Version</a> section.</li>
+<li>A <code>src</code> DID URL parameter <strong>MUST</strong> be percent-encoded as required for a
+query parameter value by [<a class="spec-reference" href="#ref:RFC3986">RFC3986</a>] (<a path-0="www.rfc-editor.org" path-1="rfc" path-2="rfc3986#section-3.4" href="https://www.rfc-editor.org/rfc/rfc3986#section-3.4">Section
+3.4</a> and, for
+characters that conflict with delimiters such as <code>&amp;</code> and <code>=</code>, <a path-0="www.rfc-editor.org" path-1="rfc" path-2="rfc3986#section-2.2" href="https://www.rfc-editor.org/rfc/rfc3986#section-2.2">Section
+2.2</a>), and a DID URL <strong>MUST NOT</strong>
+include more than one. The dereferencer <strong>MUST</strong> percent-decode it once and
+validate it as defined in <a href="#the-src-option">The <code>src</code> Option</a>, and <strong>MUST</strong>
+return the <code>invalidDidUrl</code> error if it is not valid.</li>
+<li>A <code>src</code> DID URL parameter <strong>MUST NOT</strong> be a <a href="#local-directories">local
+directory</a> or <a href="#web-locations">loopback</a> reference. The
+dereferencer <strong>MUST</strong> return the <code>invalidDidUrl</code> error for such a
+reference, and <strong>MUST NOT</strong> pass it to the <a class="term-reference" href="#term:resolver">Resolver</a>.</li>
+<li>The dereferencer <strong>MAY</strong> apply its own policy to a valid <code>src</code> value — for
+example, using it only if it names a location the dereferencer trusts, or
+ignoring it in favour of a copy of the <a class="term-reference" href="#term:did-log">DID Log</a> it already has. If it
+uses the <code>src</code> value, it passes it as the <code>src</code> resolution option, or
+retrieves the files itself and passes them directly in <code>didLog</code> and
+<code>didWitness</code>.</li>
+</ul>
+<p>The <code>src</code> parameter never changes which version is returned. As a DID URL
+query parameter, <code>src</code> is equivalent to the <code>src</code> parameter of
+<a path-0="lf-toip.atlassian.net" path-1="wiki" path-2="spaces" path-3="HOME" path-4="pages" path-5="88572360" path-6="DID+SCID+Method+Specification" href="https://lf-toip.atlassian.net/wiki/spaces/HOME/pages/88572360/DID+SCID+Method+Specification"><code>did:scid</code></a>
+when its value is an <code>https</code> URL.</p>
+<h4 id="update-rotate"><span class="spec-up-heading-text">Update (Rotate)</span><a class="toc-anchor" href="#update-rotate">§</a></h4>
+<p>Updating a <code>did:vh</code> DID follows the Update algorithm defined in
+<a class="term-reference" href="#term:vh-log">VH-Log</a>, with the following <code>did:vh</code>-specific constraints:</p>
+<ul>
+<li><strong>State changes (VH-Log Update step 1):</strong> Changes are made to the
+<a class="term-reference" href="#term:diddoc">DIDDoc</a>. The top-level <code>id</code> <strong>MUST</strong> remain <code>did:vh:&lt;SCID&gt;</code>.</li>
+<li><strong>Parameters:</strong> <code>parameters</code> <strong>MUST</strong> follow <a href="#didvh-did-method-parameters"><code>did:vh</code> DID Method
+Parameters</a>.</li>
+<li><strong>Witnesses:</strong> If <a class="term-reference" href="#term:witnesses">witnesses</a> are active, the <a class="term-reference" href="#term:did-controller">DID Controller</a>
+<strong>MUST</strong> collect the threshold of witness proofs, and make the updated
+witness proofs file available, <strong>before</strong> distributing the updated
+<a class="term-reference" href="#term:did-log">DID Log</a>.</li>
+<li><strong>Distribution:</strong> The <a class="term-reference" href="#term:did-controller">DID Controller</a> <strong>SHOULD</strong> make the updated
+<a class="term-reference" href="#term:did-log">DID Log</a> available through every <a class="term-reference" href="#term:did-log-source">DID Log source</a> where it
+previously made the log available: updating each web location, notifying
+<a class="term-reference" href="#term:watchers">watchers</a> (see <a href="#watchers">Watchers</a>), and sending it to peers.</li>
+</ul>
+<h5 id="applying-peer-to-peer-updates"><span class="spec-up-heading-text">Applying Peer-to-Peer Updates</span><a class="toc-anchor" href="#applying-peer-to-peer-updates">§</a></h5>
+<p>When <a class="term-reference" href="#term:did-logs">DID Logs</a> are exchanged <a href="#peer-to-peer-exchange">peer-to-peer</a>,
+each party holds the only copies of the other’s log, and an update may carry
+only the new entries. A party that receives new <a class="term-reference" href="#term:did-log-entries">DID log entries</a> for a
+<a class="term-reference" href="#term:did-log">DID Log</a> it holds <strong>MUST</strong> apply them as follows:</p>
+<ol>
+<li>Skip any received entry whose <code>versionId</code> is identical to that of an entry
+it already holds. If a received entry has the same version number as a held
+entry but a different <code>versionId</code>, the update is duplicitous and <strong>MUST</strong>
+be rejected.</li>
+<li>Append the remaining entries, in order, to a copy of the held
+<a class="term-reference" href="#term:did-log">DID Log</a>.</li>
+<li>Resolve the DID with that copy as <code>didLog</code>, the received witness proofs
+file (or, if none was received, the held one) as <code>didWitness</code>, and the
+<code>versionId</code> of the last appended entry as <code>versionId</code>.</li>
+<li>If resolution succeeds, replace the held <a class="term-reference" href="#term:did-log">DID Log</a> and witness proofs
+file with the ones used in step 3. Otherwise, reject the update and keep the
+held files unchanged.</li>
+</ol>
+<p>A party <strong>SHOULD</strong> keep a rejected update as evidence of duplicity.</p>
+<p>No second copy of the log is needed to detect an update that does not extend
+the held log. The <a class="term-reference" href="#term:entry-hash">entry hash</a> of each entry is calculated with the
+<code>versionId</code> of the previous entry as input, so an appended entry verifies only
+if it continues from the last held entry. Requesting the <code>versionId</code> of the
+last appended entry in step 3 ensures that resolution fails, rather than
+returning an earlier version, if any appended entry is invalid.</p>
+<h4 id="deactivate-revoke"><span class="spec-up-heading-text">Deactivate (Revoke)</span><a class="toc-anchor" href="#deactivate-revoke">§</a></h4>
+<p>A <code>did:vh</code> DID is deactivated as defined in <a class="term-reference" href="#term:vh-log">VH-Log</a>'s
+<a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#deactivate" href="https://swcurran.github.io/VH-Log/next/index.html#deactivate">Deactivate</a> section, by adding
+<code>"deactivated": true</code> to the <a class="term-reference" href="#term:parameters">parameters</a> of a new
+<a class="term-reference" href="#term:did-log-entry">DID log entry</a>. Once a DID is deactivated, a <a class="term-reference" href="#term:resolver">Resolver</a>
+<strong>MUST NOT</strong> return the <a class="term-reference" href="#term:diddoc">DIDDoc</a> and <strong>MUST</strong> include
+<code>"deactivated": true</code> in the DID Document Metadata, as defined in
+[<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>]. Prior versions <strong>MAY</strong> be resolved with the version query
+parameters, and the metadata for them <strong>MUST</strong> include <code>"deactivated": true</code>.</p>
+<p>As defined in VH-Log’s <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#deactivate" href="https://swcurran.github.io/VH-Log/next/index.html#deactivate">Deactivate</a> section, a
+<a class="term-reference" href="#term:did-controller">DID Controller</a> can instead set <code>updateKeys</code> to <code>[]</code> without setting
+<code>deactivated</code>, so that the final <a class="term-reference" href="#term:diddoc">DIDDoc</a> is still returned but cannot
+be updated.</p>
+<p>Unlike <code>did:webvh</code>, removing a published <a class="term-reference" href="#term:did-log">DID Log</a> does not effectively
+deactivate a <code>did:vh</code> DID, because copies may be held by <a class="term-reference" href="#term:watchers">watchers</a>,
+peers, and other sources. A <a class="term-reference" href="#term:did-controller">DID Controller</a> that wants to retire a DID
+<strong>SHOULD</strong> deactivate it explicitly and distribute the final log, so that all
+sources report the deactivation. See <a href="#log-freshness-and-duplicity">Log Freshness and
+Duplicity</a> for why a <a class="term-reference" href="#term:resolver">Resolver</a> may not
+see the deactivation immediately.</p>
+<h3 id="sourcing-the-did-log"><span class="spec-up-heading-text">Sourcing the DID Log</span><a class="toc-anchor" href="#sourcing-the-did-log">§</a></h3>
+<p><em>This section is non-normative.</em></p>
+<p>A <code>did:vh</code> <a class="term-reference" href="#term:resolver">Resolver</a> resolves the <a class="term-reference" href="#term:did-log">DID Log</a> it is given. Before
+calling <code>resolve</code>, the client must therefore <em>source</em> the <a class="term-reference" href="#term:did-log">DID Log</a>: it
+either obtains the <a class="term-reference" href="#term:did-log">DID Log</a> and witness proofs themselves, which it
+passes directly in <code>didLog</code> and <code>didWitness</code>, or learns a reference to where
+they are stored, which it passes in <code>src</code>. In this specification, “source”
+covers both outcomes, while “obtain” and “retrieve” mean getting the files
+themselves. How the client
+sources the log depends on how it received the DID. Each place it can source
+the <a class="term-reference" href="#term:did-log">DID Log</a> from is a <a class="term-reference" href="#term:did-log-source">DID Log source</a>; this section describes
+the common ones. They can be combined, and a <a class="term-reference" href="#term:did-log">DID Log</a> sourced from any
+of them is verified by the <a class="term-reference" href="#term:resolver">Resolver</a> in exactly the same way.</p>
+<h4 id="known-in-context"><span class="spec-up-heading-text">Known in Context</span><a class="toc-anchor" href="#known-in-context">§</a></h4>
+<p>In many uses, a client already has the <a class="term-reference" href="#term:did-log">DID Log</a>, or knows where to get
+it, because of the context in which it received the DID. For example:</p>
+<ul>
+<li><strong>A log sent with the DID.</strong> A protocol that carries a DID — such as a
+credential or presentation exchange — also carries the <a class="term-reference" href="#term:did-log">DID Log</a> and
+witness proofs, or a web location for them. The client passes them
+directly, or passes the web location by reference in <code>src</code>.</li>
+<li><strong>An ecosystem DID host.</strong> An ecosystem requires its participants to publish
+their <code>did:vh</code> <a class="term-reference" href="#term:did-logs">DID Logs</a> to a registry or database it operates. The
+client retrieves the files from the host and passes them directly, or
+passes the host’s web location by reference in <code>src</code>.</li>
+<li><strong>A previously resolved log.</strong> The client kept the files from an earlier
+resolution, and passes them directly, or by reference to the local
+directory where it keeps them — perhaps after checking another source for
+newer entries.</li>
+<li><strong>A DID URL with a <code>src</code> parameter.</strong> The client received a DID URL such as
+<code>did:vh:&lt;SCID&gt;?src=https://example.com/dids/issuer</code>, and uses the location as
+described in <a href="#reading-didvh-did-urls">Reading <code>did:vh</code> DID URLs</a>.</li>
+</ul>
+<h4 id="from-watchers"><span class="spec-up-heading-text">From Watchers</span><a class="toc-anchor" href="#from-watchers">§</a></h4>
+<p>A <a class="term-reference" href="#term:watcher">watcher</a> retrieves, verifies, archives and re-serves
+<a class="term-reference" href="#term:did-logs">DID Logs</a>, indexed by <a class="term-reference" href="#term:scid">SCID</a>. Because a <code>did:vh</code> DID is its
+<a class="term-reference" href="#term:scid">SCID</a>, a client that knows of a <a class="term-reference" href="#term:watcher">watcher</a> holding the DID —
+for example, one its ecosystem uses — can retrieve:</p>
+<ul>
+<li>the <a class="term-reference" href="#term:did-log">DID Log</a> with <strong>GET <code>&lt;WATCHER URL&gt;/log?scid=&lt;SCID&gt;</code></strong>, and</li>
+<li>if <a class="term-reference" href="#term:witnesses">witnesses</a> are active, the witness proofs file with
+<strong>GET <code>&lt;WATCHER URL&gt;/witness?scid=&lt;SCID&gt;</code></strong>.</li>
+</ul>
+<p>These are the operations defined in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#watcher-http-api-operations" href="https://swcurran.github.io/VH-Log/next/index.html#watcher-http-api-operations">VH-Log’s Watcher HTTP API
+Operations</a>. The client then
+passes the files directly, or stores them in a local directory and passes
+that by reference in <code>src</code>.</p>
+<p>Instead of retrieving from <a class="term-reference" href="#term:watchers">watchers</a> itself, a client can pass the
+copy it has and ask the <a class="term-reference" href="#term:resolver">Resolver</a> to check it against
+<a class="term-reference" href="#term:watchers">watchers</a>, using the <code>checkWatchers</code> option for <a class="term-reference" href="#term:watchers">watchers</a>
+listed in the log and the <code>extraWatchers</code> option for others. See <a href="#didvh-resolution-options"><code>did:vh</code>
+Resolution Options</a>.</p>
+<p>Once a client has resolved the DID, the <code>watchers</code> metadata lists the
+<a class="term-reference" href="#term:watchers">watchers</a> the <a class="term-reference" href="#term:did-controller">DID Controller</a> has chosen. A client can use them
+to check for newer entries, for example when the copy it holds may be out of
+date. A client is not limited to those <a class="term-reference" href="#term:watchers">watchers</a>: any party can run
+its own <a class="term-reference" href="#term:watcher">watcher</a>, or use one its ecosystem operates, and send it the
+<a class="term-reference" href="#term:did-logs">DID Logs</a> it relies on. See <a href="#log-freshness-and-duplicity">Log Freshness and
+Duplicity</a>.</p>
+<h4 id="peer-to-peer-exchange"><span class="spec-up-heading-text">Peer-to-Peer Exchange</span><a class="toc-anchor" href="#peer-to-peer-exchange">§</a></h4>
+<p>Two or more parties can use <code>did:vh</code> DIDs with one another by exchanging
+<a class="term-reference" href="#term:did-logs">DID Logs</a> directly, in the manner of <code>did:peer</code> [<a class="spec-reference" href="#ref:DID-PEER">DID-PEER</a>], without publishing
+them anywhere. Unlike <code>did:peer</code>, the DIDs keep all the VH-Log features,
+including key rotation and pre-rotation. Each party keeps the other’s
+<a class="term-reference" href="#term:did-log">DID Log</a> (and witness proofs file, if <a class="term-reference" href="#term:witnesses">witnesses</a> are active),
+and its client passes them directly, or by reference to the <a href="#local-directories">local
+directory</a> where it keeps them.</p>
+<p><strong>Initial exchange.</strong> The <a class="term-reference" href="#term:did-controller">DID Controller</a> gives the other parties the
+complete <a class="term-reference" href="#term:did-log">DID Log</a> from the first entry, and the witness proofs file if
+<a class="term-reference" href="#term:witnesses">witnesses</a> are active.</p>
+<p><strong>Updates.</strong> When the DID is updated, the <a class="term-reference" href="#term:did-controller">DID Controller</a> sends each
+party either the complete <a class="term-reference" href="#term:did-log">DID Log</a> or just the new
+<a class="term-reference" href="#term:did-log-entry">DID log entry</a>. Sending just the new entry keeps updates small, and
+works when each party receives every update in turn; a party that has missed
+an update cannot apply it, and needs the complete <a class="term-reference" href="#term:did-log">DID Log</a>. If the new
+entry must be <a class="term-reference" href="#term:witnessed">witnessed</a>, the <a class="term-reference" href="#term:did-controller">DID Controller</a> also sends the
+complete current witness proofs file; otherwise that is optional. The
+protocol used to send updates is outside the scope of this specification.</p>
+<p><strong>Applying an update.</strong> A party receiving new entries applies them as defined
+in <a href="#applying-peer-to-peer-updates">Applying Peer-to-Peer Updates</a>. Because
+each <a class="term-reference" href="#term:entry-hash">entry hash</a> chains to the previous entry, this rejects any entry
+that does not continue from the log the party holds, without needing a second
+copy of the log.</p>
+<p>A <code>did:vh</code> DID used only peer-to-peer can be created for each relationship, so
+that no identifier is shared between relationships.</p>
+<h4 id="from-a-web-location"><span class="spec-up-heading-text">From a Web Location</span><a class="toc-anchor" href="#from-a-web-location">§</a></h4>
+<p>A client that learns a web location where the <a class="term-reference" href="#term:did-controller">DID Controller</a>
+publishes the <a class="term-reference" href="#term:did-log">DID Log</a> can pass it by reference in the <code>src</code> option, or retrieve
+<code>did.jsonl</code> and <code>did-witness.json</code> itself and pass them directly.
+A client can learn such a location from a <code>src</code> DID URL query parameter, from
+an <code>alsoKnownAs</code> entry in a previously resolved <a class="term-reference" href="#term:diddoc">DIDDoc</a> (see
+<a href="#advertising-did-log-sources">Advertising DID Log Sources</a>), or from the
+context in which it received the DID.</p>
+<h4 id="advertising-did-log-sources"><span class="spec-up-heading-text">Advertising DID Log Sources</span><a class="toc-anchor" href="#advertising-did-log-sources">§</a></h4>
+<p>A <a class="term-reference" href="#term:did-controller">DID Controller</a> can tell others where current copies of the
+<a class="term-reference" href="#term:did-log">DID Log</a> are kept:</p>
+<ul>
+<li>The <code>watchers</code> <a class="term-reference" href="#term:parameter">parameter</a> lists <a class="term-reference" href="#term:watchers">watchers</a> that archive the
+log.</li>
+<li>The <a class="term-reference" href="#term:diddoc">DIDDoc</a> <code>alsoKnownAs</code> property can include <code>did:vh</code> DID URLs for
+the same DID with a <code>src</code> parameter, one for each location where the
+<a class="term-reference" href="#term:did-log">DID Log</a> is published (a web location, or another scheme such as
+<code>ipns</code>), as in <code>did:scid</code>. Each location listed this
+way is expected to hold the same <a class="term-reference" href="#term:did-log">DID Log</a>, although some may briefly
+lag others while an update is distributed.</li>
+</ul>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-12"><span class="token property">"alsoKnownAs"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+  <span class="token string">"did:vh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ?src=https://example.com/dids/issuer"</span><span class="token punctuation">,</span>
+  <span class="token string">"did:vh:QmfGEUAcMpzo25kF2Rhn8L5FAXysfGnkzjwdKoNPi615XQ?src=https://backup.example.org/{SCID}"</span>
+<span class="token punctuation">]</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-12" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+<p>Both are available only after the DID has been resolved at least once, so
+they serve to check for newer entries rather than to source the log in the
+first place.</p>
+<h4 id="log-freshness-and-duplicity"><span class="spec-up-heading-text">Log Freshness and Duplicity</span><a class="toc-anchor" href="#log-freshness-and-duplicity">§</a></h4>
+<p>A <code>did:vh</code> <a class="term-reference" href="#term:did-log">DID Log</a> has no single authoritative location, so a client
+faces two risks that <code>did:webvh</code> handles by trusting the DID’s web location:</p>
+<ul>
+<li><strong>Staleness.</strong> A source may hold an older, shorter copy of the log, and so
+miss updates such as a key rotation or deactivation. A <a class="term-reference" href="#term:resolver">Resolver</a>
+verifies the log it is given, but cannot know whether newer entries exist
+elsewhere.</li>
+<li><strong>Duplicity.</strong> A <a class="term-reference" href="#term:did-controller">DID Controller</a>, or an attacker holding its keys,
+could create two different extensions of the same log and show different
+ones to different parties.</li>
+</ul>
+<p>For two verified copies of a <a class="term-reference" href="#term:did-log">DID Log</a> for the same DID, log B
+<strong>extends</strong> log A if B contains every entry of A, in the same positions, with
+the same <code>versionId</code>s. Since each <code>versionId</code> includes a hash chained to the
+previous entry, it is enough to check that B contains an entry with the
+<code>versionId</code> of A’s last entry, at the same position.</p>
+<p>A client that needs the current version of a DID can reduce the risk of
+staleness by sourcing the log from a source expected to be current — such as
+a <a class="term-reference" href="#term:watcher">watcher</a> listed in the log — rather than relying only on a cached
+copy or a copy supplied by the party presenting the DID. The <code>ttl</code> metadata
+indicates how long the <a class="term-reference" href="#term:did-controller">DID Controller</a> expects a copy to stay current.</p>
+<p>A client that obtains copies from more than one source can compare them. If
+one extends the other, the longer is the more current. If neither extends the
+other, the log is <strong>duplicitous</strong>: the client should not rely on any version
+after the last entry the copies have in common, and may keep the conflicting
+entries as evidence and report them, for example to <a class="term-reference" href="#term:watchers">watchers</a>. A
+client can also have the <a class="term-reference" href="#term:resolver">Resolver</a> make these comparisons, with the
+<code>checkWatchers</code>, <code>extraWatchers</code> and <code>minCopies</code> <a href="#didvh-resolution-options">resolution
+options</a>; the <a class="term-reference" href="#term:resolver">Resolver</a> then fails with
+<code>logForked</code> if the log has been forked.</p>
+<p><a class="term-reference" href="#term:witnesses">Witnesses</a> and <a class="term-reference" href="#term:watchers">watchers</a> address duplicity as described in
+VH-Log’s
+<a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#witnesses" href="https://swcurran.github.io/VH-Log/next/index.html#witnesses">Witnesses</a> and
+<a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#watchers" href="https://swcurran.github.io/VH-Log/next/index.html#watchers">Watchers</a>
+sections: <a class="term-reference" href="#term:witnesses">witnesses</a> are expected to approve only an entry that
+extends their own copy of the log, but no one else can confirm that they do,
+while <a class="term-reference" href="#term:watchers">watchers</a> detect conflicting copies directly, but only the
+copies they see. For <code>did:vh</code> these matter more than for <code>did:webvh</code>, because
+there is no web location to act as the reference copy. A relying party that
+runs its own <a class="term-reference" href="#term:watcher">watcher</a>, or uses one its ecosystem operates, gets a
+check that is independent of the <a class="term-reference" href="#term:did-controller">DID Controller</a>; <code>extraWatchers</code>
+lets it name such <a class="term-reference" href="#term:watchers">watchers</a> when resolving. <a class="term-reference" href="#term:did-controllers">DID Controllers</a>
+of <code>did:vh</code> DIDs that are relied on by many parties are encouraged to use
+<a class="term-reference" href="#term:witnesses">witnesses</a> and <a class="term-reference" href="#term:watchers">watchers</a>, and parties relying on such DIDs are
+encouraged to use <a class="term-reference" href="#term:watchers">watchers</a> they trust.</p>
+<p>As VH-Log’s <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#selecting-a-version" href="https://swcurran.github.io/VH-Log/next/index.html#selecting-a-version">Selecting a
+Version</a>
+section notes, selecting a version with <code>versionNumber</code> is less safe than with
+<code>versionId</code>. If the log is duplicitous, <code>did:vh:&lt;SCID&gt;?versionNumber=3</code> can
+resolve to a different <a class="term-reference" href="#term:diddoc">DIDDoc</a> for different parties, while
+<code>did:vh:&lt;SCID&gt;?versionId=3-Qm...</code> resolves to one <a class="term-reference" href="#term:diddoc">DIDDoc</a> or fails.</p>
+<h3 id="did-method-processes"><span class="spec-up-heading-text">DID Method Processes</span><a class="toc-anchor" href="#did-method-processes">§</a></h3>
+<h4 id="didvh-did-method-parameters"><span class="spec-up-heading-text"><code>did:vh</code> DID Method Parameters</span><a class="toc-anchor" href="#didvh-did-method-parameters">§</a></h4>
+<p><code>did:vh</code> uses the <a class="term-reference" href="#term:vh-log">VH-Log</a>
+<a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#vh-log-parameters" href="https://swcurran.github.io/VH-Log/next/index.html#vh-log-parameters">parameters</a> mechanism, including its
+general rules. The parameters <code>scid</code>, <code>updateKeys</code>, <code>nextKeyHashes</code>, <code>witness</code>,
+<code>watchers</code>, <code>deactivated</code>, and <code>ttl</code> are used exactly as defined in
+<a class="term-reference" href="#term:vh-log">VH-Log</a>, with one <code>did:vh</code>-specific constraint: <code>witness</code> <code>id</code> values
+<strong>MUST</strong> be <code>did:key</code> DIDs (see <a href="#witnesses">Witnesses</a>). The <code>parameters</code>
+object <strong>MUST NOT</strong> include any other properties, except those listed below.</p>
+<wa-callout id="example-7" class="spec-up-notice spec-up-notice--example" variant="neutral" appearance="filled-outlined"><div class="spec-up-notice-heading"><a class="notice-link" href="#example-7">EXAMPLE</a></div><p>The <code>parameters</code> property in the first <a class="term-reference" href="#term:did-log-entry">DID log entry</a>:</p>
+<div class="spec-up-code-block-wrapper"><pre class="language-json spec-up-code-block"><code class="language-json" id="spec-up-code-copy-target-13"><span class="token punctuation">{</span>
+  <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"did:vh:1.0"</span><span class="token punctuation">,</span>
+  <span class="token property">"scid"</span><span class="token operator">:</span> <span class="token string">"{SCID}"</span><span class="token punctuation">,</span>
+  <span class="token property">"updateKeys"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"z82LkqR25TU88tztBEiFydNf4fUPn8oWBANckcmuqgonz9TAbK9a7WGQ5dm7jyqyRMpaRAe"</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"nextKeyHashes"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token string">"enkkrohe5ccxyc7zghic6qux5inyzthg2tqka4b57kvtorysc3aa"</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre><wa-copy-button class="spec-up-code-copy-button" from="spec-up-code-copy-target-13" copy-label="Copy" success-label="Copied" error-label="Copy failed"></wa-copy-button></div>
+</wa-callout>
+<ul>
+<li><code>method</code>: The <code>did:vh</code> form of VH-Log’s <code>logVersion</code> parameter, with the
+same rules: it <strong>MUST</strong> appear in the first entry, <strong>MAY</strong> appear in later
+entries to upgrade to a later version, and a value that is not exactly one of
+the acceptable values <strong>MUST</strong> cause resolution to terminate. <code>logVersion</code>
+itself <strong>MUST NOT</strong> be used. Acceptable values:
+<ul>
+<li><code>did:vh:1.0</code> — corresponds to VH-Log <code>vh-log:1.0</code>, and permits the same
+hash algorithm (<code>SHA-256</code> only) and <a class="term-reference" href="#term:data-integrity">Data Integrity</a> cryptosuite
+(<code>eddsa-jcs-2022</code> [<a class="spec-reference" href="#ref:DI-EDDSA-V1.0">DI-EDDSA-V1.0</a>] only) for both log-entry and
+witness proofs.</li>
+</ul>
+</li>
+</ul>
+<p><code>did:vh</code> does not use the <code>did:webvh</code> <code>portable</code> <a class="term-reference" href="#term:parameter">parameter</a>. An entry
+that includes it <strong>MUST</strong> be rejected.</p>
+<h4 id="cryptographic-agility"><span class="spec-up-heading-text">Cryptographic Agility</span><a class="toc-anchor" href="#cryptographic-agility">§</a></h4>
+<p><code>did:vh</code> inherits cryptographic agility from <a class="term-reference" href="#term:vh-log">VH-Log</a> unchanged, with
+the <code>method</code> <a class="term-reference" href="#term:parameter">parameter</a> in the role of <code>logVersion</code>.</p>
+<h4 id="scid-generation-and-verification"><span class="spec-up-heading-text">SCID Generation and Verification</span><a class="toc-anchor" href="#scid-generation-and-verification">§</a></h4>
+<p>The <a class="term-reference" href="#term:scid">SCID</a> is generated and verified exactly as defined in VH-Log’s
+<a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#scid-generation-and-verification" href="https://swcurran.github.io/VH-Log/next/index.html#scid-generation-and-verification">SCID Generation and
+Verification</a> section.
+The preliminary log entry is the one described in <a href="#create-register">Create
+(Register)</a>, in which the <code>{SCID}</code> placeholder appears in
+the DID string <code>did:vh:{SCID}</code> wherever it is used, and in <code>parameters.scid</code>.</p>
+<h4 id="entry-hash-generation-and-verification"><span class="spec-up-heading-text">Entry Hash Generation and Verification</span><a class="toc-anchor" href="#entry-hash-generation-and-verification">§</a></h4>
+<p>The <a class="term-reference" href="#term:entry-hash">entry hash</a> is generated and verified exactly as defined in
+VH-Log’s <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#entry-hash-generation-and-verification" href="https://swcurran.github.io/VH-Log/next/index.html#entry-hash-generation-and-verification">Entry Hash Generation and
+Verification</a>
+section.</p>
+<h4 id="authorized-keys-and-pre-rotation"><span class="spec-up-heading-text">Authorized Keys and Pre-Rotation</span><a class="toc-anchor" href="#authorized-keys-and-pre-rotation">§</a></h4>
+<p>The authorized keys mechanism is as defined in VH-Log’s <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#authorized-keys" href="https://swcurran.github.io/VH-Log/next/index.html#authorized-keys">Authorized
+Keys</a> section, and key pre-rotation as
+defined in its <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#pre-rotation-key-hash-generation-and-verification" href="https://swcurran.github.io/VH-Log/next/index.html#pre-rotation-key-hash-generation-and-verification">Pre-Rotation Key Hash Generation and
+Verification</a>
+section. The proof <code>cryptosuite</code> <strong>MUST</strong> be one permitted by the active
+<code>method</code> <a class="term-reference" href="#term:parameter">parameter</a>; <a class="term-reference" href="#term:resolvers">Resolvers</a> <strong>MUST NOT</strong> accept a
+structurally valid signature using any other cryptosuite.</p>
+<p>A <code>did:vh</code> log has no location whose control an attacker would also need in
+order to publish an update (see <a href="#no-authoritative-location">No Authoritative
+Location</a>), so <a class="term-reference" href="#term:did-controllers">DID Controllers</a> <strong>SHOULD</strong>
+use <a class="term-reference" href="#term:pre-rotation">pre-rotation</a>.</p>
+<h4 id="witnesses"><span class="spec-up-heading-text">Witnesses</span><a class="toc-anchor" href="#witnesses">§</a></h4>
+<p><code>did:vh</code> uses the <a class="term-reference" href="#term:witness">witness</a> mechanism defined in VH-Log’s
+<a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#witnesses" href="https://swcurran.github.io/VH-Log/next/index.html#witnesses">Witnesses</a> section, with the same
+identifier and key rules as <code>did:webvh</code>:</p>
+<ul>
+<li>Each <code>witness</code> <code>id</code> <strong>MUST</strong> be a <a class="term-reference" href="#term:did:key">did:key</a> DID whose key is
+compatible with a cryptosuite permitted by the active <code>method</code>. A <code>witness</code>
+<a class="term-reference" href="#term:parameter">parameter</a> containing any other <code>id</code> <strong>MUST</strong> be rejected when the
+parameter is validated.</li>
+<li>A witness proof’s <code>verificationMethod</code> <strong>MUST</strong> be a <code>did:key</code> DID URL of the
+form <code>did:key:&lt;multibase&gt;#&lt;multibase&gt;</code>, with the two multibase values
+byte-for-byte equal. The verification key <strong>MUST</strong> be recovered only by
+decoding the <code>did:key</code>; <a class="term-reference" href="#term:resolvers">Resolvers</a> <strong>MUST NOT</strong> resolve the witness
+DID or consult any other key store.</li>
+<li>The witness proofs file is <code>did-witness.json</code>, with the data model defined in
+VH-Log’s <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#the-witness-proofs-file" href="https://swcurran.github.io/VH-Log/next/index.html#the-witness-proofs-file">Witness Proofs File</a>
+section.</li>
+</ul>
+<p>The witness proofs file reaches the <a class="term-reference" href="#term:resolver">Resolver</a> in the same way as the
+<a class="term-reference" href="#term:did-log">DID Log</a>: passed directly in <code>didWitness</code>, or retrieved from the
+location the <code>src</code> reference names. When passing the files directly, a client can obtain the
+witness proofs file from a different <a class="term-reference" href="#term:did-log-source">DID Log source</a> than the
+<a class="term-reference" href="#term:did-log">DID Log</a> — for example, from a <a class="term-reference" href="#term:watcher">watcher</a>'s <code>/witness</code>
+operation.</p>
+<p>Witnesses matter more for <code>did:vh</code> than for <code>did:webvh</code>. With no single
+location for the log, an attacker holding the update keys can distribute an
+update through any source; with <a class="term-reference" href="#term:witnesses">witnesses</a> active, the update also
+needs a threshold of witness proofs. <a class="term-reference" href="#term:did-controllers">DID Controllers</a> <strong>SHOULD</strong> use
+<a class="term-reference" href="#term:witnesses">witnesses</a> for DIDs relied on by many parties. Their value against
+<a href="#log-freshness-and-duplicity">duplicity</a> depends on how far the
+<a class="term-reference" href="#term:witnesses">witnesses</a> are trusted, as described there.</p>
+<h4 id="watchers"><span class="spec-up-heading-text">Watchers</span><a class="toc-anchor" href="#watchers">§</a></h4>
+<p><code>did:vh</code> uses the <a class="term-reference" href="#term:watcher">watcher</a> mechanism defined in VH-Log’s
+<a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#watchers" href="https://swcurran.github.io/VH-Log/next/index.html#watchers">Watchers</a> section, including its HTTP API, which
+the <code>did:webvh</code> <a path-0="raw.githubusercontent.com" path-1="decentralized-identity" path-2="didwebvh" path-3="refs" path-4="heads" path-5="main" path-6="watcherOpenAPI" path-7="watcher-v1.0.0.yml" href="https://raw.githubusercontent.com/decentralized-identity/didwebvh/refs/heads/main/watcherOpenAPI/watcher-v1.0.0.yml">Watcher OpenAPI
+definition</a>
+describes. For <code>did:vh</code>, <a class="term-reference" href="#term:watchers">watchers</a> are also a primary <a class="term-reference" href="#term:did-log">DID Log</a>, as described in <a href="#from-watchers">From Watchers</a>. Any party can run a
+<a class="term-reference" href="#term:watcher">watcher</a> for a <code>did:vh</code> DID, whether or not it is listed in the
+<code>watchers</code> <a class="term-reference" href="#term:parameter">parameter</a>. When resolving a <code>did:vh</code> DID,
+<a class="term-reference" href="#term:resolvers">Resolvers</a> <strong>MUST</strong> return the active list of <a class="term-reference" href="#term:watchers">watchers</a> in the
+DID Document Metadata.</p>
+<p>VH-Log’s notification operation, <strong>POST <code>&lt;WATCHER URL&gt;/log?id=&lt;identifier&gt;</code></strong>,
+asks the <a class="term-reference" href="#term:watcher">watcher</a> to retrieve the latest log from its location. A
+<code>did:vh</code> DID has no location, so for <code>did:vh</code>:</p>
+<ul>
+<li><strong>POST <code>&lt;WATCHER URL&gt;/log?id=&lt;DID URL&gt;</code></strong>, where the DID URL includes a
+<code>src</code> query parameter, asks the <a class="term-reference" href="#term:watcher">watcher</a> to retrieve the log (and witness
+proofs file) from that location. As for any DID URL, the <code>src</code> value
+cannot be a local directory or loopback reference.</li>
+<li><strong>POST <code>&lt;WATCHER URL&gt;/log?id=&lt;DID&gt;</code></strong>, where there is no <code>src</code> parameter,
+<strong>MUST</strong> carry the complete <a class="term-reference" href="#term:did-log">DID Log</a> as the request body, with media
+type <code>text/jsonl</code>. If <a class="term-reference" href="#term:witnesses">witnesses</a> are active, the
+<a class="term-reference" href="#term:did-controller">DID Controller</a> <strong>MUST</strong> first send the witness proofs file with
+<strong>POST <code>&lt;WATCHER URL&gt;/witness?id=&lt;DID&gt;</code></strong>, with media type
+<code>application/json</code>.</li>
+</ul>
+<p>In both cases the <a class="term-reference" href="#term:watcher">watcher</a> <strong>MUST</strong> fully verify the log, <strong>MUST</strong>
+confirm that it extends any copy the <a class="term-reference" href="#term:watcher">watcher</a> already holds (see <a href="#log-freshness-and-duplicity">Log
+Freshness and Duplicity</a>), and indexes it by
+<a class="term-reference" href="#term:scid">SCID</a>.</p>
+<h2 id="security-considerations"><span class="spec-up-heading-text">Security Considerations</span><a class="toc-anchor" href="#security-considerations">§</a></h2>
+<p><em>This section is non-normative.</em></p>
+<p>This section follows the guidelines in [<a class="spec-reference" href="#ref:RFC3552">RFC3552</a>] and aligns with the
+[<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>] requirements in <a path-0="www.w3.org" path-1="TR" path-2="did-core" path-3="#security-requirements" href="https://www.w3.org/TR/did-core/#security-requirements">DID Core
+7.3</a>. The security
+considerations in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#security-considerations" href="https://swcurran.github.io/VH-Log/next/index.html#security-considerations">VH-Log’s Security
+Considerations</a> section apply to
+<code>did:vh</code> unchanged, except as noted below. The sections below cover only what
+differs for <code>did:vh</code>. The requirements referred to here are defined in the
+normative sections of this specification and of VH-Log.</p>
+<h3 id="no-authoritative-location"><span class="spec-up-heading-text">No Authoritative Location</span><a class="toc-anchor" href="#no-authoritative-location">§</a></h3>
+<p>A <code>did:webvh</code> <a class="term-reference" href="#term:resolver">Resolver</a> treats the DID’s web location as the
+authoritative place to find the current <a class="term-reference" href="#term:did-log">DID Log</a>. A <code>did:vh</code> DID has
+no such location. The integrity of any copy of the log is fully protected by
+the <a class="term-reference" href="#term:scid">SCID</a>, the hash chain and the proofs, so a <a class="term-reference" href="#term:resolver">Resolver</a> can
+safely accept a log from any source. What a <a class="term-reference" href="#term:resolver">Resolver</a> cannot know from
+the log alone is whether it is <em>complete</em> — whether newer entries exist.</p>
+<p>The resulting threats, and their mitigations, are:</p>
+<ul>
+<li><strong>Withholding and truncation.</strong> A source, or the party presenting a DID,
+supplies an older copy of the log, for example one from before a key
+rotation or deactivation. A <a class="term-reference" href="#term:resolver">Resolver</a> verifies the log it is given
+but cannot detect this. Mitigation: clients that need the current version
+source the log from a source expected to be current, such as a listed
+<a class="term-reference" href="#term:watcher">watcher</a>, and never treat the absence of newer entries at one source
+as proof that none exist. See <a href="#log-freshness-and-duplicity">Log Freshness and
+Duplicity</a>.</li>
+<li><strong>Duplicity (split view).</strong> A <a class="term-reference" href="#term:did-controller">DID Controller</a>, or an attacker with
+its update keys, creates two different extensions of one log and gives them
+to different parties. Mitigation: clients that obtain copies from several
+sources compare them and do not rely on versions past the point of
+divergence; peers apply updates so that non-extending entries are rejected;
+<a class="term-reference" href="#term:witnesses">witnesses</a> are expected to refuse an entry that does not extend the
+log they hold, although others cannot verify that they do;
+<a class="term-reference" href="#term:watchers">watchers</a> — including ones run by relying parties — detect and can
+report conflicting logs.</li>
+<li><strong>Compromised keys and no location to reclaim.</strong> In <code>did:webvh</code>, control of
+the web location is a second factor an attacker who steals the update keys
+also needs in order to publish. A <code>did:vh</code> log has no such location, so an
+attacker with the update keys can distribute a valid update through any
+source. Mitigation: <a class="term-reference" href="#term:did-controllers">DID Controllers</a> are expected to use
+<a class="term-reference" href="#term:pre-rotation">pre-rotation</a> (see <a href="#authorized-keys-and-pre-rotation">Authorized Keys and
+Pre-Rotation</a>), and to use
+<a class="term-reference" href="#term:witnesses">witnesses</a> for DIDs relied on by many parties, so that an update
+also needs the approval of a threshold of <a class="term-reference" href="#term:witnesses">witnesses</a> (see
+<a href="#witnesses">Witnesses</a>).</li>
+</ul>
+<h3 id="the-src-option-and-other-client-supplied-values"><span class="spec-up-heading-text">The <code>src</code> Option and Other Client-Supplied Values</span><a class="toc-anchor" href="#the-src-option-and-other-client-supplied-values">§</a></h3>
+<p>The <code>src</code> resolution option, and a <code>src</code> DID URL query parameter, are supplied
+by the client or by whoever gave it the DID URL, and so are untrusted input.
+The same is true of a <code>didLog</code> value, which is why it is verified in full:</p>
+<ul>
+<li><strong>Server-side request forgery.</strong> A web location <code>src</code> value can name any
+host. <a class="term-reference" href="#term:resolvers">Resolvers</a> apply to web location retrievals the transport
+requirements in VH-Log’s <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#retrieving-log-resources" href="https://swcurran.github.io/VH-Log/next/index.html#retrieving-log-resources">Retrieving Log
+Resources</a> section (see <a href="#web-locations">Web
+Locations</a>), including rejecting IP literals and not
+following redirects automatically. A <a class="term-reference" href="#term:resolver">Resolver</a> can also decline to
+retrieve from <code>src</code> references at all (see <a href="#didvh-resolution-options"><code>did:vh</code> Resolution
+Options</a>), or allow only locations permitted by
+its configuration. The same hardening applies to a client retrieving from a web location or
+a <a class="term-reference" href="#term:watcher">watcher</a> itself. The one exception is a loopback (<code>http</code>)
+reference, which is accepted only by a <a class="term-reference" href="#term:resolver">Resolver</a> local to its
+client and never from a DID URL; see <a href="#web-locations">Web Locations</a>. A
+<a class="term-reference" href="#term:resolver">Resolver</a> supporting <a href="#other-schemes">other schemes</a> applies
+equivalent protections to those retrievals and to any gateway it uses.</li>
+<li><strong>Stale or wrong logs.</strong> A web location may serve an old copy of the log,
+or a log for a different DID. The first is covered under <a href="#no-authoritative-location">No Authoritative
+Location</a>; the second is detected by the
+<a class="term-reference" href="#term:scid">SCID</a> check that the <a href="#resolution-algorithm">Resolution
+Algorithm</a> applies to every entry.</li>
+<li><strong>Local file and service access.</strong> A local directory or loopback <code>src</code> reference is accepted only
+by a <a class="term-reference" href="#term:resolver">Resolver</a> local to its client; a <a class="term-reference" href="#term:resolver">Resolver</a> that accepts
+requests from other systems never reads local files or retrieves from
+loopback hosts, and a <code>src</code> DID URL parameter is never a local directory or
+loopback reference. A local <a class="term-reference" href="#term:resolver">Resolver</a>
+reads only <code>did.jsonl</code> and <code>did-witness.json</code> from the named directory. See
+<a href="#local-directories">Local Directories</a>.</li>
+<li><strong>Misleading association.</strong> The domain in a <code>src</code> value says nothing about
+who controls the DID. A <a class="term-reference" href="#term:did-controller">DID Controller</a> can publish a log at any
+location it can write to, and anyone can put any <code>src</code> value in a DID URL.
+For this reason, <a class="term-reference" href="#term:resolvers">Resolvers</a> and their clients do not treat a web
+location as evidence of an association between the DID and the owner of
+the domain (see <a href="#the-src-option">The <code>src</code> Option</a>).</li>
+</ul>
+<h3 id="endpoint-authentication"><span class="spec-up-heading-text">Endpoint Authentication</span><a class="toc-anchor" href="#endpoint-authentication">§</a></h3>
+<p>Retrievals from web locations and from <a class="term-reference" href="#term:watchers">watchers</a> over HTTP use HTTPS
+with server authentication, as described in VH-Log’s <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#endpoint-authentication" href="https://swcurran.github.io/VH-Log/next/index.html#endpoint-authentication">Endpoint
+Authentication</a> section. The only
+exception is a retrieval from a loopback (<code>http</code>) reference by a
+<a class="term-reference" href="#term:resolver">Resolver</a> local to its client. As with
+all sources, a <a class="term-reference" href="#term:did-log">DID Log</a> is verified by its content, not by the
+authentication of the server that provided it.</p>
+<h3 id="peer-to-peer-use"><span class="spec-up-heading-text">Peer-to-Peer Use</span><a class="toc-anchor" href="#peer-to-peer-use">§</a></h3>
+<p>When <a class="term-reference" href="#term:did-logs">DID Logs</a> are exchanged peer-to-peer, each party holds the only
+copies of the other’s log, and an update may carry only the new entry. With no
+other copy to compare against, the hash chain is what protects a party: it
+applies an update as defined in <a href="#applying-peer-to-peer-updates">Applying Peer-to-Peer
+Updates</a>, so that entries that do not continue
+from the log it holds are rejected, and keeps a rejected update as evidence of
+duplicity.</p>
+<h3 id="post-quantum-attacks"><span class="spec-up-heading-text">Post Quantum Attacks</span><a class="toc-anchor" href="#post-quantum-attacks">§</a></h3>
+<p>As defined in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#post-quantum-attacks" href="https://swcurran.github.io/VH-Log/next/index.html#post-quantum-attacks">VH-Log’s Post Quantum
+Attacks</a> section.
+<a class="term-reference" href="#term:pre-rotation">Pre-rotation</a> is especially valuable for <code>did:vh</code>, for the reason
+given under <a href="#no-authoritative-location">No Authoritative Location</a>.</p>
+<h3 id="resolver-validation-checklist"><span class="spec-up-heading-text">Resolver Validation Checklist</span><a class="toc-anchor" href="#resolver-validation-checklist">§</a></h3>
+<p>This checklist extends <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#resolver-validation-checklist" href="https://swcurran.github.io/VH-Log/next/index.html#resolver-validation-checklist">VH-Log’s Resolver Validation
+Checklist</a> with
+<code>did:vh</code>-specific points. It does not restate or replace the normative
+requirements.</p>
+<ul>
+<li><strong>DID syntax:</strong> the <code>did</code> input matches the <code>did:vh</code> ABNF.</li>
+<li><strong>Resolution options:</strong> <code>didLog</code> is a string, <code>didWitness</code> (only with
+<code>didLog</code>) a JSON array; a <code>src</code> value is an absolute URL with no query or
+fragment that is either a valid web location — <code>https</code> with a domain name
+host (or <code>http</code> with a loopback host), an optional port, and valid path
+segments — a valid local directory — a <code>file:</code> URL with an absolute path
+and an empty or <code>localhost</code> host — or a URL with another scheme, which
+returns <code>featureNotSupported</code> if the <a class="term-reference" href="#term:resolver">Resolver</a> does not support
+it; at most one version option; malformed options return
+<code>invalidOptions</code>. A <code>didLog</code> value is verified in full, like any other copy.
+Local directory and loopback references are accepted only by a
+<a class="term-reference" href="#term:resolver">Resolver</a> local to its client, and never from a DID URL.</li>
+<li><strong>Parameters:</strong> <code>method</code> is an acceptable <code>did:vh</code> value; <code>logVersion</code> and
+<code>portable</code> are absent.</li>
+<li><strong>SCID and identity:</strong> every entry’s <code>state.id</code> is exactly <code>did:vh:</code> plus the
+first entry’s <code>parameters.scid</code>, which equals the <a class="term-reference" href="#term:scid">SCID</a> in the DID
+being resolved.</li>
+<li><strong>Witnesses:</strong> as defined in <a href="#witnesses">Witnesses</a> — <code>did:key</code> witness
+identifiers, keys recovered only from the <code>did:key</code>, body and fragment
+multibase values equal.</li>
+<li><strong>Passing the log:</strong> exactly one of <code>didLog</code> and <code>src</code>; <code>didWitness</code> only with
+<code>didLog</code>; a declined <code>src</code> returns <code>featureNotSupported</code>.</li>
+</ul>
+<h2 id="privacy-considerations"><span class="spec-up-heading-text">Privacy Considerations</span><a class="toc-anchor" href="#privacy-considerations">§</a></h2>
+<p><em>This section is non-normative.</em></p>
+<p>This section addresses the privacy considerations in alignment with
+[<a class="spec-reference" href="#ref:RFC6973">RFC6973</a>] Section 5, and aligns with the [<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>] requirements
+in <a path-0="www.w3.org" path-1="TR" path-2="did-core" path-3="#privacy-requirements" href="https://www.w3.org/TR/did-core/#privacy-requirements">DID Core 7.4</a>. The
+privacy considerations in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#privacy-considerations" href="https://swcurran.github.io/VH-Log/next/index.html#privacy-considerations">VH-Log’s Privacy
+Considerations</a> section apply to
+<code>did:vh</code> unchanged, except as noted below.</p>
+<h3 id="surveillance"><span class="spec-up-heading-text">Surveillance</span><a class="toc-anchor" href="#surveillance">§</a></h3>
+<p>Retrieving a <a class="term-reference" href="#term:did-log">DID Log</a> reveals the <a class="term-reference" href="#term:resolver">Resolver</a>'s interest in the
+DID to the source it retrieves from: the host of a web location, or a
+<a class="term-reference" href="#term:watcher">watcher</a>. Because <code>did:vh</code> lets a <a class="term-reference" href="#term:resolver">Resolver</a> choose its
+sources, a <a class="term-reference" href="#term:resolver">Resolver</a> can reduce this by using a cached copy, a
+<a class="term-reference" href="#term:watcher">watcher</a> it trusts, or a copy supplied by the party presenting the
+DID, and by not retrieving web locations chosen by others. A
+<a class="term-reference" href="#term:resolver">Resolver</a> or client can also retrieve through privacy-enhancing
+network tools, such as Tor or a VPN, so that the source does not learn the
+network address of the party interested in the DID.</p>
+<h3 id="correlation-and-identification"><span class="spec-up-heading-text">Correlation and Identification</span><a class="toc-anchor" href="#correlation-and-identification">§</a></h3>
+<p>A <code>did:vh</code> DID contains no domain name, so it does not by itself link its
+controller to a domain owner. <code>src</code> values and <code>alsoKnownAs</code> entries can
+reintroduce such a link, so <a class="term-reference" href="#term:did-controllers">DID Controllers</a> that want to avoid it are
+advised not to publish them.</p>
+<p>For peer-to-peer use, a <a class="term-reference" href="#term:did-controller">DID Controller</a> can create a separate <code>did:vh</code>
+DID for each relationship, so that the relationships cannot be correlated by
+identifier.</p>
+<h3 id="right-to-erasure-gdpr-art-17httpsgdpr-infoeuart-17-gdpr"><span class="spec-up-heading-text">Right to Erasure (<a path-0="gdpr-info.eu" path-1="art-17-gdpr" path-2="" href="https://gdpr-info.eu/art-17-gdpr/">GDPR Art. 17</a>)</span><a class="toc-anchor" href="#right-to-erasure-gdpr-art-17httpsgdpr-infoeuart-17-gdpr">§</a></h3>
+<p>A <code>did:vh</code> <a class="term-reference" href="#term:did-log">DID Log</a> is likely to be held in several places — by
+<a class="term-reference" href="#term:watchers">watchers</a>, at web locations, and by peers. A <a class="term-reference" href="#term:did-controller">DID Controller</a>
+cannot remove every copy itself. The <a class="term-reference" href="#term:watcher">watcher</a> deletion operation
+defined in VH-Log can be used to request removal from <a class="term-reference" href="#term:watchers">watchers</a>; how
+such requests are handled is best defined by ecosystem governance.</p>
+<h2 id="definitions"><span class="spec-up-heading-text">Definitions</span><a class="toc-anchor" href="#definitions">§</a></h2>
+<dl>
+<dt><span id="term:vh-log"><span id="term:verifiable-history-log"><span id="term:vh-log">VH-Log</span></span></span></dt>
+<dd>The Verifiable History Log specification defines a general-purpose,
+append-only, cryptographically chained log structure for recording the
+verifiable history of a versioned <a class="term-reference" href="#term:state">state</a> object. <code>did:vh</code> is a
+<a class="term-reference" href="#term:specialisation">specialisation</a> of VH-Log. See the <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html" href="https://swcurran.github.io/VH-Log/next/index.html">VH-Log
+specification</a>.</dd>
+<dt><span id="term:specialisations"><span id="term:specialisation">specialisation</span></span></dt>
+<dd>As defined in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#term:specialisation" href="https://swcurran.github.io/VH-Log/next/index.html#term:specialisation">VH-Log</a>: a
+specification that uses <a class="term-reference" href="#term:vh-log">VH-Log</a> as its foundation. <code>did:vh</code> is a
+<a class="term-reference" href="#term:specialisation">specialisation</a> of <a class="term-reference" href="#term:vh-log">VH-Log</a> in which the <a class="term-reference" href="#term:state">state</a> is a
+W3C DID Document (<a class="term-reference" href="#term:diddoc">DIDDoc</a>) and the DID contains only the
+<a class="term-reference" href="#term:scid">SCID</a>.</dd>
+<dt><span id="term:state">state</span></dt>
+<dd>As defined in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#term:state" href="https://swcurran.github.io/VH-Log/next/index.html#term:state">VH-Log</a>: the versioned object
+recorded in each <a class="term-reference" href="#term:log-entry">log entry</a>. In <code>did:vh</code>, the <a class="term-reference" href="#term:state">state</a> is the
+<a class="term-reference" href="#term:diddoc">DIDDoc</a> for that version of the DID.</dd>
+<dt><span id="term:data-integrity">Data Integrity</span></dt>
+<dd>As defined in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#term:data-integrity" href="https://swcurran.github.io/VH-Log/next/index.html#term:data-integrity">VH-Log</a>: the W3C
+specification of mechanisms for ensuring the authenticity and integrity of
+structured digital documents using digital signatures and other cryptographic
+proofs.</dd>
+<dt><span id="term:dids"><span id="term:did"><span id="term:decentralized-identifiers"><span id="term:decentralized-identifier">Decentralized Identifier</span></span></span></span></dt>
+<dd>Decentralized Identifiers (DIDs) [<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>] are a type of identifier
+that enable verifiable, decentralized digital identities. A DID refers to any
+subject (e.g., a person, organization, thing, data model, abstract entity,
+etc.) as determined by the controller of the DID.</dd>
+<dt><span id="term:did-controllers"><span id="term:did-controller's"><span id="term:did-controller">DID Controller</span></span></span></dt>
+<dd>The entity that controls (creates, updates, deactivates) a given DID, as
+defined in [<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>].</dd>
+<dt><span id="term:diddoc">DIDDoc</span></dt>
+<dd>A DID Document as defined by [<a class="spec-reference" href="#ref:DID-CORE">DID-CORE</a>] — the document returned when a
+DID is resolved.</dd>
+<dt><span id="term:did-logs"><span id="term:did-log">DID Log</span></span></dt>
+<dd>The <a class="term-reference" href="#term:vh-log">VH-Log</a> log for a <code>did:vh</code> DID: a list of
+<a class="term-reference" href="#term:did-log-entries">DID log entries</a>, one added for each update of the DID.</dd>
+<dt><span id="term:log-entry"><span id="term:log-entries"><span id="term:did-log-entries"><span id="term:did-log-entry">DID Log Entry</span></span></span></span></dt>
+<dd>A JSON object in a <a class="term-reference" href="#term:did-log">DID Log</a> that defines an authorized version of
+the <a class="term-reference" href="#term:diddoc">DIDDoc</a> and the <a class="term-reference" href="#term:parameters">parameters</a> in effect. The first entry
+establishes the DID and version 1 of the <a class="term-reference" href="#term:diddoc">DIDDoc</a>.</dd>
+<dt><span id="term:did-log-sources"><span id="term:did-log-source">DID Log source</span></span></dt>
+<dd>A place from which a client sources the <a class="term-reference" href="#term:did-log">DID Log</a> of a <code>did:vh</code> DID —
+that is, gets either the log itself or a reference to it — before
+passing it to a <a class="term-reference" href="#term:resolver">Resolver</a>: the context in which the DID was
+received, a <a class="term-reference" href="#term:watcher">watcher</a>, a peer, or a web location. See <a href="#sourcing-the-did-log">Sourcing the
+DID Log</a>.</dd>
+<dt><span id="term:did-methods"><span id="term:did-method">DID Method</span></span></dt>
+<dd>The mechanism by which a particular type of DID and its associated DID
+document are created, resolved, updated, and deactivated, defined in a DID
+method specification. This document is the DID method specification for
+<code>did:vh</code>.</dd>
+<dt><span id="term:did:key">did:key</span></dt>
+<dd><code>did:key</code>, as described in the <a path-0="w3c-ccg.github.io" path-1="did-key-spec" path-2="" href="https://w3c-ccg.github.io/did-key-spec/">W3C CCG
+specification</a>, is a DID method that
+derives a DID document directly from a single encoded public key, requiring no
+registry or network interaction to resolve. <code>did:vh</code> uses <code>did:key</code> DIDs to
+identify <a class="term-reference" href="#term:witnesses">witnesses</a>.</dd>
+<dt><span id="term:entry-hashes"><span id="term:entryhash"><span id="term:entry-hash">Entry Hash</span></span></span></dt>
+<dd>As defined in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#term:entry-hash" href="https://swcurran.github.io/VH-Log/next/index.html#term:entry-hash">VH-Log</a>: a hash over a
+<a class="term-reference" href="#term:did-log-entry">DID log entry</a> (excluding its proof) that chains the entry to its
+predecessor, and is included in the entry’s <code>versionId</code>.</dd>
+<dt><span id="term:iso8601-string"><span id="term:iso8601">ISO8601</span></span></dt>
+<dd>As defined in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#term:iso8601" href="https://swcurran.github.io/VH-Log/next/index.html#term:iso8601">VH-Log</a>: a date/time
+expressed using the <a path-0="en.wikipedia.org" path-1="wiki" path-2="ISO_8601" href="https://en.wikipedia.org/wiki/ISO_8601">ISO8601 Standard</a>.</dd>
+<dt><span id="term:json-line"><span id="term:json-lines">JSON Lines</span></span></dt>
+<dd>As defined in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#term:json-lines" href="https://swcurran.github.io/VH-Log/next/index.html#term:json-lines">VH-Log</a>: lines of JSON
+with whitespace removed, separated by newlines, as described at
+<a path-0="jsonlines.org" path-1="" href="https://jsonlines.org/">https://jsonlines.org/</a>.</dd>
+<dt><span id="term:parameter"><span id="term:parameters">parameters</span></span></dt>
+<dd>As defined in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#term:parameters" href="https://swcurran.github.io/VH-Log/next/index.html#term:parameters">VH-Log</a>: the
+configuration in each <a class="term-reference" href="#term:did-log-entry">DID log entry</a> that controls how the
+<a class="term-reference" href="#term:did-controller">DID Controller</a> generates entries and how <a class="term-reference" href="#term:resolvers">Resolvers</a> process
+the <a class="term-reference" href="#term:did-log">DID Log</a>.</dd>
+<dt><span id="term:key-pre-rotation"><span id="term:pre-rotation">Pre-Rotation</span></span></dt>
+<dd>As defined in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#term:pre-rotation" href="https://swcurran.github.io/VH-Log/next/index.html#term:pre-rotation">VH-Log</a>: a technique
+by which the controller of a key commits to the key it will rotate to next,
+without revealing it, protecting against an attacker who learns the current
+private key.</dd>
+<dt><span id="term:resolvers"><span id="term:resolver">Resolver</span></span></dt>
+<dd>As defined in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#term:resolver" href="https://swcurran.github.io/VH-Log/next/index.html#term:resolver">VH-Log</a>: a party that
+obtains and verifies a <a class="term-reference" href="#term:did-log">DID Log</a> to produce the current or a
+historical <a class="term-reference" href="#term:diddoc">DIDDoc</a>.</dd>
+<dt><span id="term:scids"><span id="term:scid"><span id="term:self-certifying-identifiers"><span id="term:self-certifying-identifier">self-certifying identifier</span></span></span></span></dt>
+<dd>As defined in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#term:self-certifying-identifier" href="https://swcurran.github.io/VH-Log/next/index.html#term:self-certifying-identifier">VH-Log</a>:
+an identifier derived from the hash of the first <a class="term-reference" href="#term:did-log-entry">DID log entry</a>,
+generated with the placeholder <code>{SCID}</code> wherever the SCID is to appear. A
+<code>did:vh</code> DID is <code>did:vh:</code> followed by its SCID.</dd>
+<dt><span id="term:watchers"><span id="term:watcher">watcher</span></span></dt>
+<dd>As defined in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#term:watcher" href="https://swcurran.github.io/VH-Log/next/index.html#term:watcher">VH-Log</a>: a party that
+retrieves, verifies, archives and re-serves <a class="term-reference" href="#term:did-logs">DID Logs</a>, indexed by
+<a class="term-reference" href="#term:scid">SCID</a>. For <code>did:vh</code>, watchers are also a primary
+<a class="term-reference" href="#term:did-log-source">DID Log source</a>.</dd>
+<dt><span id="term:witnessed"><span id="term:witnesses"><span id="term:witness">witness</span></span></span></dt>
+<dd>As defined in <a path-0="swcurran.github.io" path-1="VH-Log" path-2="next" path-3="index.html#term:witness" href="https://swcurran.github.io/VH-Log/next/index.html#term:witness">VH-Log</a>: a party that
+verifies a <a class="term-reference" href="#term:did-log-entry">DID log entry</a> before it is distributed and, if it
+approves, returns a <a class="term-reference" href="#term:data-integrity">Data Integrity</a> proof. <code>did:vh</code> witnesses are
+identified by <a class="term-reference" href="#term:did:key">did:key</a> DIDs.</dd>
+</dl>
+<h2 id="references"><span class="spec-up-heading-text">References</span><a class="toc-anchor" href="#references">§</a></h2>
+<p>
+</p><dl class="reference-list">
+      <dt id="ref:DI-EDDSA-V1.0">DI-EDDSA-V1.0</dt>
+      <dd>
+        <cite><a href="https://www.w3.org/TR/vc-di-eddsa">Data Integrity EdDSA Cryptosuites v1.0</a></cite>.
+        Dave Longley; Manu Sporny; 2024-12-08. <span class="reference-status">Status: W3C Technical Recommendation</span>.
+      </dd>
+    
+      <dt id="ref:DID-CORE">DID-CORE</dt>
+      <dd>
+        <cite><a href="https://www.w3.org/TR/did-core/">Decentralized Identifiers (DIDs) v1.0</a></cite>.
+        Manu Sporny; Amy Guy; Markus Sabadello; Drummond Reed; 2022-07-19. <span class="reference-status">Status: REC</span>.
+      </dd>
+    
+      <dt id="ref:DID-EXTENSION-RESOLUTION">DID-EXTENSION-RESOLUTION</dt>
+      <dd>
+        <cite><a href="https://w3c.github.io/did-extensions-resolution/">DID Resolution Extensions Registry</a></cite>.
+        The Decentralized Identifier Working Group (W3C); 2024-11-19. <span class="reference-status">Status: W3C Technical Report</span>.
+      </dd>
+    
+      <dt id="ref:DID-PEER">DID-PEER</dt>
+      <dd>
+        <cite><a href="https://identity.foundation/peer-did-method-spec/">Peer DID Method Specification</a></cite>.
+        Daniel Hardman; Stephen Curran; Sam Curren; 2025-05-20. <span class="reference-status">Status: DIF Draft v1.0</span>.
+      </dd>
+    
+      <dt id="ref:DID-RESOLUTION">DID-RESOLUTION</dt>
+      <dd>
+        <cite><a href="https://w3c.github.io/did-resolution/">Decentralized Identifier Resolution (DID Resolution) v1</a></cite>.
+        Stephen Curran; Joe Andrieu; 2026-09-02. <span class="reference-status">Status: W3C Editor's Draft</span>.
+      </dd>
+    
+      <dt id="ref:RFC2119">RFC2119</dt>
+      <dd>
+        <cite><a href="https://www.rfc-editor.org/rfc/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a></cite>.
+        S. Bradner; 1997-03. <span class="reference-status">Status: Best Current Practice</span>.
+      </dd>
+    
+      <dt id="ref:RFC3552">RFC3552</dt>
+      <dd>
+        <cite><a href="https://www.rfc-editor.org/rfc/rfc3552">Guidelines for Writing RFC Text on Security Considerations</a></cite>.
+        E. Rescorla; B. Korver; 2003-07. <span class="reference-status">Status: Best Current Practice</span>.
+      </dd>
+    
+      <dt id="ref:RFC3986">RFC3986</dt>
+      <dd>
+        <cite><a href="https://www.rfc-editor.org/rfc/rfc3986">Uniform Resource Identifier (URI): Generic Syntax</a></cite>.
+        T. Berners-Lee; R. Fielding; L. Masinter; 2005-01. <span class="reference-status">Status: Internet Standard</span>.
+      </dd>
+    
+      <dt id="ref:RFC5234">RFC5234</dt>
+      <dd>
+        <cite><a href="https://www.rfc-editor.org/rfc/rfc5234">Augmented BNF for Syntax Specifications: ABNF</a></cite>.
+        D. Crocker, Ed.; P. Overell; 2008-01. <span class="reference-status">Status: Internet Standard</span>.
+      </dd>
+    
+      <dt id="ref:RFC5891">RFC5891</dt>
+      <dd>
+        <cite><a href="https://www.rfc-editor.org/rfc/rfc5891">Internationalized Domain Names in Applications (IDNA): Protocol</a></cite>.
+        J. Klensin; 2010-08. <span class="reference-status">Status: Proposed Standard</span>.
+      </dd>
+    
+      <dt id="ref:RFC6973">RFC6973</dt>
+      <dd>
+        <cite><a href="https://www.rfc-editor.org/rfc/rfc6973">Privacy Considerations for Internet Protocols</a></cite>.
+        A. Cooper; H. Tschofenig; B. Aboba; J. Peterson; J. Morris; M. Hansen; R. Smith; 2013-07. <span class="reference-status">Status: Informational</span>.
+      </dd>
+    
+      <dt id="ref:RFC8089">RFC8089</dt>
+      <dd>
+        <cite><a href="https://www.rfc-editor.org/rfc/rfc8089">The "file" URI Scheme</a></cite>.
+        M. Kerwin; 2017-02. <span class="reference-status">Status: Proposed Standard</span>.
+      </dd>
+    
+      <dt id="ref:RFC8174">RFC8174</dt>
+      <dd>
+        <cite><a href="https://www.rfc-editor.org/rfc/rfc8174">Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</a></cite>.
+        B. Leiba; 2017-05. <span class="reference-status">Status: Best Current Practice</span>.
+      </dd>
+    
+      <dt id="ref:RFC9457">RFC9457</dt>
+      <dd>
+        <cite><a href="https://www.rfc-editor.org/rfc/rfc9457">Problem Details for HTTP APIs</a></cite>.
+        M. Nottingham; E. Wilde; S. Dalal; 2023-07. <span class="reference-status">Status: Proposed Standard</span>.
+      </dd>
+    
+</dl>
+<p></p>
+<h2 id="didvh-version-changelog"><span class="spec-up-heading-text"><code>did:vh</code> Version Changelog</span><a class="toc-anchor" href="#didvh-version-changelog">§</a></h2>
+<ul>
+<li>Version 0.1 (Pre-Draft)
+<ul>
+<li>Initial draft. Defines <code>did:vh</code> as a <a class="term-reference" href="#term:specialisation">specialisation</a> of
+<a class="term-reference" href="#term:vh-log">VH-Log</a>, derived from <code>did:webvh</code> with the domain and path removed
+from the DID.</li>
+<li>Defines resolution as the DID Resolution <code>resolve(did, resolutionOptions)</code> function, with <code>did:vh</code> resolution options for the two
+ways of passing the log: directly (<code>didLog</code>, <code>didWitness</code>) or by
+reference (<code>src</code>, aligned with <code>did:scid</code>, naming an <code>https</code> web
+location, a location using another supported URL scheme such as <code>ipns</code>,
+or, for a local <a class="term-reference" href="#term:resolver">Resolver</a>, a loopback <code>http</code> location or a local
+directory), plus the version options.</li>
+<li>Describes, non-normatively, how a client sources the <a class="term-reference" href="#term:did-log">DID Log</a>
+(the log itself or a reference to it) before resolution — known in context, from <a class="term-reference" href="#term:watchers">watchers</a>,
+peer-to-peer exchange (with updates sent as the complete log or just the
+new entry), and from
+a web location — and how to manage freshness and duplicity.</li>
+<li>Removes the <code>did:webvh</code> features that depend on a web location: the
+DID-to-HTTPS transformation, the <code>portable</code> parameter, the implicit
+<code>#files</code> and <code>#whois</code> services, and parallel <code>did:web</code> publishing.</li>
+</ul>
+</li>
+</ul>
+
+            </article>
+          </main>
+        </wa-page>
+
+        
+      <wa-drawer id="repo_issues_drawer" class="spec-up-issues-drawer" label="GitHub Issues" placement="end" light-dismiss>
+        <div class="spec-up-issues-search-row">
+          <wa-input id="repo_issue_search" type="search" placeholder="Search open issues" autocomplete="off" spellcheck="false" size="small">
+            <wa-icon library="spec-up" slot="start" name="search" label="Search GitHub issues"></wa-icon>
+            <span slot="end" class="spec-up-issues-search-end">
+              <span id="repo_issue_search_spinner" class="spec-up-issues-search-spinner" hidden aria-hidden="true">
+                <wa-spinner></wa-spinner>
+              </span>
+              <button id="repo_issue_search_clear" type="button" aria-label="Clear issue search" disabled>Clear</button>
+            </span>
+          </wa-input>
+        </div>
+        <div class="spec-up-issues-panel-wrap">
+          <div id="repo_issue_panel_loading" class="spec-up-issues-panel-loading" aria-hidden="true">
+            <wa-spinner></wa-spinner>
+            <p class="spec-up-issues-panel-empty-msg" hidden>No issues found in this repo</p>
+          </div>
+          <div id="repo_issue_panel" class="spec-up-issues-panel">
+            <p id="repo_issue_status"></p>
+            <ul id="repo_issue_list" class="spec-up-issue-list"></ul>
+            <div id="repo_issue_load_more" class="spec-up-issues-loading" hidden>
+              <wa-spinner></wa-spinner>
+              <span>Loading more issues…</span>
+            </div>
+          </div>
+        </div>
+      </wa-drawer>
+    
+
+        
+        <template id="spec_up_config">{&quot;title&quot;:&quot;The did:vh DID Method -- DID + Verifiable History (Editors Draft)&quot;,&quot;spec_directory&quot;:&quot;./spec&quot;,&quot;markdown_paths&quot;:[&quot;header.md&quot;,&quot;abstract.md&quot;,&quot;overview.md&quot;,&quot;specification.md&quot;,&quot;security_and_privacy.md&quot;,&quot;definitions.md&quot;,&quot;references.md&quot;,&quot;version.md&quot;],&quot;source&quot;:{&quot;host&quot;:&quot;github&quot;,&quot;account&quot;:&quot;swcurran&quot;,&quot;repo&quot;:&quot;didvh&quot;},&quot;output_path&quot;:&quot;./next&quot;,&quot;spec_refs&quot;:[{&quot;multiformats&quot;:{&quot;href&quot;:&quot;https://datatracker.ietf.org/doc/draft-multiformats-multibase/08/&quot;,&quot;title&quot;:&quot;Multiformats&quot;,&quot;rawDate&quot;:&quot;2024-02-21&quot;,&quot;authors&quot;:[&quot;Juan Benet&quot;,&quot;Manu Sporny&quot;],&quot;status&quot;:&quot;Internet Draft&quot;}},{&quot;di-eddsa-v1.0&quot;:{&quot;href&quot;:&quot;https://www.w3.org/TR/vc-di-eddsa&quot;,&quot;title&quot;:&quot;Data Integrity EdDSA Cryptosuites v1.0&quot;,&quot;rawDate&quot;:&quot;2024-12-08&quot;,&quot;authors&quot;:[&quot;Dave Longley&quot;,&quot;Manu Sporny&quot;],&quot;status&quot;:&quot;W3C Technical Recommendation&quot;}},{&quot;draft-msporny-base58-03&quot;:{&quot;href&quot;:&quot;https://datatracker.ietf.org/doc/html/draft-msporny-base58-03&quot;,&quot;title&quot;:&quot;The Base58 Encoding Scheme&quot;,&quot;rawDate&quot;:&quot;2021-03-31&quot;,&quot;authors&quot;:[&quot;S. Nakamoto&quot;,&quot;Manu Sporny&quot;],&quot;status&quot;:&quot;Internet Draft&quot;}},{&quot;json-schema-core&quot;:{&quot;href&quot;:&quot;https://json-schema.org/draft/2020-12/json-schema-core&quot;,&quot;title&quot;:&quot;JSON Schema: A Media Type for Describing JSON Documents&quot;,&quot;rawDate&quot;:&quot;2022-06-16&quot;,&quot;authors&quot;:[&quot;A. Wright&quot;,&quot;H. Andrews&quot;,&quot;B. Hutton&quot;,&quot;G. Dennis&quot;],&quot;status&quot;:&quot;Internet Draft&quot;}},{&quot;DID-RESOLUTION&quot;:{&quot;href&quot;:&quot;https://w3c.github.io/did-resolution/&quot;,&quot;title&quot;:&quot;Decentralized Identifier Resolution (DID Resolution) v1&quot;,&quot;rawDate&quot;:&quot;2026-09-02&quot;,&quot;authors&quot;:[&quot;Stephen Curran&quot;,&quot;Joe Andrieu&quot;],&quot;status&quot;:&quot;W3C Editor&#39;s Draft&quot;}},{&quot;DID-EXTENSION-RESOLUTION&quot;:{&quot;href&quot;:&quot;https://w3c.github.io/did-extensions-resolution/&quot;,&quot;title&quot;:&quot;DID Resolution Extensions Registry&quot;,&quot;rawDate&quot;:&quot;2024-11-19&quot;,&quot;authors&quot;:[&quot;The Decentralized Identifier Working Group (W3C)&quot;],&quot;status&quot;:&quot;W3C Technical Report&quot;}},{&quot;vc-recognized-entities-1.0&quot;:{&quot;href&quot;:&quot;https://w3c.github.io/vc-recognized-entities/&quot;,&quot;title&quot;:&quot;Recognized Entities v1.0&quot;,&quot;rawDate&quot;:&quot;2026-09-14&quot;,&quot;authors&quot;:[&quot;Manu Sporny&quot;,&quot;Dave Longley&quot;,&quot;David Chadwick&quot;,&quot;Isaac Henderson Johnson Jeyakumar&quot;,&quot;Shigeya Suzuki&quot;,&quot;Steve Capell&quot;,&quot;Phil Archer&quot;],&quot;status&quot;:&quot;W3C Working Draft&quot;}},{&quot;semver&quot;:{&quot;href&quot;:&quot;https://semver.org&quot;,&quot;title&quot;:&quot;Semantic Versioning 2.0.0&quot;,&quot;rawDate&quot;:&quot;2013-06-18&quot;,&quot;authors&quot;:[&quot;Tom Preston-Werner&quot;],&quot;status&quot;:&quot;Internet Draft&quot;}},{&quot;DID-PEER&quot;:{&quot;href&quot;:&quot;https://identity.foundation/peer-did-method-spec/&quot;,&quot;title&quot;:&quot;Peer DID Method Specification&quot;,&quot;rawDate&quot;:&quot;2025-05-20&quot;,&quot;authors&quot;:[&quot;Daniel Hardman&quot;,&quot;Stephen Curran&quot;,&quot;Sam Curren&quot;],&quot;status&quot;:&quot;DIF Draft v1.0&quot;}}]}</template>
+        <script src="assets/compiled/body.js"></script>
+      </body>
+    </html>
+  
